@@ -1,0 +1,29 @@
+package com.example.demo.service;
+
+import java.time.LocalDate;
+import java.util.List;
+
+import com.example.demo.repository.modelo.Reserva;
+
+import com.example.demo.repository.modelo.Vehiculo;
+import com.example.demo.service.to.ReservaTO;
+
+public interface IReservaService {
+
+	public Reserva reservarVehiculo(String placa, String cedula, LocalDate inicio, LocalDate fin);
+
+	public boolean buscarvehiculoDisponible(String placa, LocalDate inicio, LocalDate fin);
+
+	public void retiro(String numero);
+
+	public Reserva buscarAutoReserva(String numero);
+
+	//public List<ReservaTo> buscarPorFechas(LocalDate fechaInicio, LocalDate fechaFin);
+
+	//public RetiroTo buscarReservas(String numero);
+	
+	public List<ReservaTO> buscarReservasPorIdCliente(Integer id);
+	
+
+	
+}
