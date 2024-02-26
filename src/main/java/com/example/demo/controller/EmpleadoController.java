@@ -1,32 +1,42 @@
 package com.example.demo.controller;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
+import org.springframework.hateoas.Link;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.demo.repository.modelo.Cliente;
-
 import com.example.demo.repository.modelo.Vehiculo;
 import com.example.demo.service.IClienteService;
 import com.example.demo.service.IReservaService;
 import com.example.demo.service.IVehiculoService;
 import com.example.demo.service.to.ClienteTO;
+import com.example.demo.service.to.VehiculoTO;
 
-@Controller
+//METODOS ESTÁTICOS
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
+@RestController//Servicio
 @RequestMapping("/empleados")
 public class EmpleadoController {
 
@@ -45,143 +55,95 @@ public class EmpleadoController {
 		genero.add("M");
 	}
 
-	@GetMapping("/inicio")
-	public String paginaPrincipal(Cliente cliente, Vehiculo vehiculo) {
-		return "vistaPrincipalEmpleado";
-	}
-
-	// CLIENTES
-	@PostMapping("/registroCliente")
-	public String registrarCliente(Cliente cliente) {
+	//2.a: REGISTRAR CLIENTE
+	//http://localhost:8082/API/v1.0/Renta/empleados
+	@PostMapping(consumes =MediaType.APPLICATION_JSON_VALUE)
+	public void registroComoEmpleado(@RequestBody ClienteTO cliente) {//en la inserción no se coloca el id, ni registro
 		this.iClienteService.registroComoEmpleado(cliente);
-		return "redirect:/empleados/buscarClientes";
 	}
 
-	@GetMapping("/nuevoCliente")
-	public String paginaNuevoCliente(Cliente cliente, Model modelo) {
-		modelo.addAttribute("genero", genero);
-		return "vistaNuevoCliente";
-	}
 
-	@GetMapping("/buscarClientes")
-	public String buscarListaClientes(Model modelo) {
-		List<ClienteTO> listaClientes = this.iClienteService.buscarTodos();
-		modelo.addAttribute("clientes", listaClientes);
-		return "vistaListaClientes";
-	}
-
-	//BUSCAR LOS CLIENTES POR APELLIDO
-	//http://localhost:8082/API/v1.0/Renta/clientes/buscarCliente?apellido=
+	//2.b: BUSCAR CLIENTES POR APELLIDO
+	//http://localhost:8082/API/v1.0/Renta/empleados/buscarCliente?apellido=
 	@GetMapping(path="/buscarCliente",produces = "application/json")
-		public ResponseEntity<List<ClienteTO>> buscarClienteApellido(@RequestParam(required = false) String apellido) {
-			List<ClienteTO> lista = this.iClienteService.buscarPorApellido(apellido);
-			HttpHeaders cabeceras = new HttpHeaders();
-			cabeceras.add("mensaje_242", "Lista consultada de manera satisfactoria.");
-			cabeceras.add("mensaje_info", "El sistema va estar en mantenimiento el fin de semana.");
-			return new ResponseEntity<>(lista, cabeceras, 242); //todo lo que no es de ka data principal va en al cabecera
-	        
-	    
+	public ResponseEntity<List<ClienteTO>> buscarClienteApellido(@RequestParam(required = false) String apellido) {
+		List<ClienteTO> lista = this.iClienteService.buscarPorApellido(apellido);
+			
+			for(ClienteTO clie: lista) {
+				Link link = linkTo(methodOn(ClienteControllerRestFul.class).consultarReservasPorNumero(clie.getId()))
+						.withRel("reservas");
+				clie.add(link);
+			}	
+			return ResponseEntity.status(HttpStatus.OK).body(lista); 
 	}
 
-	@GetMapping("/buscarClientesApellido")
-	public String buscarClientesApellido(Cliente cliente) {
-		return "vistaBuscarClientesApellido";
-	}
-
-	@GetMapping("/verCliente/{idCliente}")
-	public String visualizarCliente(@PathVariable("idCliente") Integer id, Model modelo) {
-		Cliente cliente = this.iClienteService.buscarPorId(id);
-		modelo.addAttribute("cliente", cliente);
-		return "vistaCliente";
-	}
-
-	@GetMapping("/buscarCliente/{idCliente}")
-	public String buscarCliente(@PathVariable("idCliente") Integer id, Model modelo) {
-
-		Cliente cliente = this.iClienteService.buscarPorId(id);
-		modelo.addAttribute("cliente", cliente);
-		return "vistaEmpleadoActualizarCliente";
-	}
-
-	@PutMapping("/actualizarCliente/{idCliente}")
-	public String actualizarClienteE(@PathVariable("idCliente") Integer id, Cliente cliente) {
+	//2.b: ACTUALIZAR TODOS LOS DATOS DEL CLIENTE
+	//http://localhost:8082/API/v1.0/Renta/empleados/id
+	@PutMapping(path="/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+	public void actualizarClienteE(@RequestBody ClienteTO cliente,@PathVariable Integer id ){
 		cliente.setId(id);
 		this.iClienteService.actualizar(cliente);
-		return "redirect:/empleados/buscarClientes";
+		
 	}
 
-	@DeleteMapping("/borrarCliente/{idCliente}")
-	public String borrarCliente(@PathVariable("idCliente") Integer id) {
+	//2.b: ELIMINAR CLIENTE
+	//http://localhost:8082/API/v1.0/Renta/empleados/id
+	@DeleteMapping(path="/{id}")
+	public void borrarCliente(@PathVariable Integer id) {
 		this.iClienteService.eliminar(id);
-		return "redirect:/empleados/buscarClientes";
+		
+	}
+	
+
+	//--------------------------- VEHICULOS ----------------------------------------
+	
+	//2.c INGRESAR VEHICULO
+	//http://localhost:8082/API/v1.0/Renta/empleados/insertarVehiculo
+	@PostMapping(path="/insertarVehiculo",consumes =MediaType.APPLICATION_JSON_VALUE)
+	public void insertarVehiculo(@RequestBody VehiculoTO vehiculo) {//en la inserción no se coloca el id
+		this.iVehiculoService.insertar(vehiculo);
 	}
 
-	// VEHICULOS
 
-	@GetMapping("/buscar")
-	public String buscarTodos(Model modelo) {
-		List<Vehiculo> listaVehiculos = this.iVehiculoService.buscarTodos();
-		modelo.addAttribute("listaVehiculos", listaVehiculos);
-		return "vistaListaVehiculos";
+	//2.d BUSCAR VEHICULO POR MARCA
+	//http://localhost:8082/API/v1.0/Renta/empleados
+	@GetMapping(path="/buscarVehiculo",produces = "application/json")
+	public ResponseEntity<List<VehiculoTO>> buscarPorMarca(@RequestParam(required = false) String marca) {
+		List<VehiculoTO> lista = this.iVehiculoService.buscarPorMarca(marca);
+			
+			for(VehiculoTO vehi: lista) {
+				Link link = linkTo(methodOn(EmpleadoController.class).buscarPorMarca(marca))
+						.withSelfRel();
+				vehi.add(link);
+			}	
+			return ResponseEntity.status(HttpStatus.OK).body(lista); 
 	}
-
-	@GetMapping("/buscarMarca")
-	public String buscarMarca(Model modelo, Vehiculo vehiculo) {
-		List<Vehiculo> listaVehiculos = this.iVehiculoService.buscarPorMarca(vehiculo.getMarca());
-		modelo.addAttribute("listaVehiculos", listaVehiculos);
-		return "vistaListaVehiculos";
-	}
-
-	@GetMapping("/buscarVehiculosMarca")
-	public String buscarVehiculosMarca(Vehiculo vehiculo) {
-		return "vistaBuscarVehiculosMarca";
-	}
-
-	@GetMapping("/verVehiculo/{idVehiculo}")
-	public String buscarVehiculo(@PathVariable("idVehiculo") Integer id, Model modelo) {
-		Vehiculo vehiculo = this.iVehiculoService.buscarPorId(id);
-		modelo.addAttribute("vehiculo", vehiculo);
-		return "vistaVehiculo";
-	}
-
-	@GetMapping("/buscarVehiculo/{idVehiculo}")
-	public String buscarVehiculoActualizar(@PathVariable("idVehiculo") Integer id, Model modelo) {
-		Vehiculo vehiculo = this.iVehiculoService.buscarPorId(id);
-		modelo.addAttribute("vehiculo", vehiculo);
-		return "vistaVehiculoActualizar";
-	}
-
-	@PutMapping("/actualizar/{idVehiculo}")
-	public String actualizarVehiculo(@PathVariable("idVehiculo") Integer id, Vehiculo vehiculo, Model modelo) {
+	
+	//2.d: ACTUALIZAR TODOS LOS DATOS DEL VEHICULO
+	//http://localhost:8082/API/v1.0/Renta/empleados/actualizarVehiculo/{id}
+	@PutMapping(path="/actualizarVehiculo/{id}",consumes = MediaType.APPLICATION_JSON_VALUE)
+	public void actualizarVehiculo(@RequestBody VehiculoTO vehiculo,@PathVariable Integer id ) {//no se inserta el id
 		vehiculo.setId(id);
 		this.iVehiculoService.actualizar(vehiculo);
-		List<String> estadoL = Arrays.asList("Disponible", "No Disponible");
-		modelo.addAttribute("estadoL", estadoL);
-		return "redirect:/empleados/buscar";
+		//List<String> estadoL = Arrays.asList("Disponible", "No Disponible");
+		
 	}
 
-	@DeleteMapping("/borrar/{idVehiculo}")
-	public String borrarVehiculo(@PathVariable("idVehiculo") Integer id, RedirectAttributes a) {
+
+	//2.d: ELIMINAR VEHICULO
+	//http://localhost:8082/API/v1.0/Renta/empleados/borrar/{id}
+	@DeleteMapping(path="/borrarVehiculo/{id}")
+	public void borrarVehiculo(@PathVariable Integer id) {
 		Vehiculo v = this.iVehiculoService.buscarPorId(id);
 		if (v.getEstado().equals("No Disponible")) {
 			System.out.println("No es posible eliminar");
-			a.addFlashAttribute("error", "ATENCION: Este vehiculo No esta disponible");
-			return "redirect:/empleados/buscar";
 		}
 		this.iVehiculoService.eliminar(id);
-		return "redirect:/empleados/buscar";
 	}
 
-	@PostMapping("/insertar")
-	public String insertarVehiculo(Vehiculo vehiculo) {
-		this.iVehiculoService.insertar(vehiculo);
-		return "redirect:/empleados/buscar";
-	}
 
-	@GetMapping("/nuevoVehiculo")
-	public String paginaNuevoVehiculo(Vehiculo vehiculo) {
-		return "vistaNuevoVehiculo";
-	}
+
+
 /*
 	@GetMapping("/retirarVehiculo")
 	public String retirarVehiculo(RetiroTo retiroTo, Model modelo) {

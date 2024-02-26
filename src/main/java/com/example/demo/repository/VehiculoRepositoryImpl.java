@@ -13,6 +13,7 @@ import jakarta.transaction.Transactional;
 
 
 import com.example.demo.repository.modelo.Vehiculo;
+import com.example.demo.repository.modelo.DTO.VehiculoDTO;
 
 @Repository
 @Transactional
@@ -106,6 +107,17 @@ public class VehiculoRepositoryImpl implements IVehiculoRepository {
 	public List<Vehiculo> buscarPorMarcayModelo(String marca, String modelo) {
 		TypedQuery<Vehiculo> myQuery = this.entityManager
 				.createQuery("SELECT v FROM Vehiculo v WHERE v.marca =:datoMarca OR v.modelo =: datoModelo", Vehiculo.class);
+		myQuery.setParameter("datoMarca", marca);
+		myQuery.setParameter("datoModelo", modelo);
+		return myQuery.getResultList();
+	}
+
+	@Override
+	public List<VehiculoDTO> buscarVehiculosPorMarcayModelo(String marca, String modelo) {
+		// TODO Auto-generated method stub
+		Query myQuery  = this.entityManager
+				.createQuery("SELECT NEW com.example.demo.repository.modelo.DTO.VehiculoDTO(v.placa, v.modelo, v.marca, v.anioFabricacion, v.estado, v.renta) "
+						+ "FROM Vehiculo v WHERE v.marca =:datoMarca OR v.modelo =: datoModelo");
 		myQuery.setParameter("datoMarca", marca);
 		myQuery.setParameter("datoModelo", modelo);
 		return myQuery.getResultList();

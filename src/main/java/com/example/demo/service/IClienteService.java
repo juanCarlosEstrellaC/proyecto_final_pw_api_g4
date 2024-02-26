@@ -11,7 +11,7 @@ public interface IClienteService {
 
 	public void registro(ClienteTO cliente);
 
-	public void registroComoEmpleado(Cliente cliente);
+	public void registroComoEmpleado(ClienteTO cliente);
 
 	public List<ClienteTO> buscarPorApellido(String apellido);
 
@@ -19,7 +19,7 @@ public interface IClienteService {
 
 	public Cliente buscarPorId(Integer id);
 
-	public void actualizar(Cliente cliente);
+	public void actualizar(ClienteTO cliente);
 
 	public Cliente buscarPorCedula(String cedula);
 

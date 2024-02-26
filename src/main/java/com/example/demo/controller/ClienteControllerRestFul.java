@@ -3,6 +3,7 @@ package com.example.demo.controller;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,13 +19,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.demo.repository.modelo.Cliente;
+import com.example.demo.repository.modelo.DatoReserva;
+import com.example.demo.repository.modelo.Reserva;
 import com.example.demo.repository.modelo.Vehiculo;
 import com.example.demo.service.IClienteService;
 import com.example.demo.service.ICobroService;
@@ -32,10 +33,6 @@ import com.example.demo.service.IReservaService;
 import com.example.demo.service.IVehiculoService;
 import com.example.demo.service.to.ClienteTO;
 import com.example.demo.service.to.ReservaTO;
-
-//METODOS ESTÁTICOS
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 
 @RestController//Servicio
@@ -66,19 +63,6 @@ public class ClienteControllerRestFul {
 		return new ResponseEntity<>(lista, cabeceras, 242); //todo lo que no es de ka data principal va en al cabecera
 	}
 
-	//BUSCAR LOS CLIENTES POR APELLIDO
-	//http://localhost:8082/API/v1.0/Renta/clientes/buscarCliente?apellido=
-	@GetMapping(path="/buscarCliente",produces = "application/json")
-		public ResponseEntity<List<ClienteTO>> buscarClienteApellido(@RequestParam(required = false) String apellido) {
-		List<ClienteTO> lista = this.iClienteService.buscarPorApellido(apellido);
-			
-			for(ClienteTO clie: lista) {
-				Link link = linkTo(methodOn(ClienteControllerRestFul.class).consultarReservasPorNumero(clie.getId()))
-						.withRel("reservas");
-				clie.add(link);
-			}	
-			return ResponseEntity.status(HttpStatus.OK).body(lista); 
-	}
 	
 	//buscar reserva por numero
 	@GetMapping(path="/{numero}/reservas")
@@ -86,6 +70,20 @@ public class ClienteControllerRestFul {
 		List<ReservaTO> lista = this.reservaService.buscarReservasPorIdCliente(numero);
 		return ResponseEntity.status(HttpStatus.OK).body(lista);
 	}
+	
+	//1.b: RESERVAR VEHICULO
+		@PostMapping(path="/generarReserva",consumes =MediaType.APPLICATION_JSON_VALUE)
+		public void reservarAuto(DatoReserva datoReserva, Model modelo) {
+			Reserva nuevaReserva = this.reservaService.reservarVehiculo(datoReserva.getPlaca(), datoReserva.getCedula(),
+					datoReserva.getFechaInicio(), datoReserva.getFechaFin());
+			BigDecimal precio = this.vehiculoService.buscarPorPlaca(datoReserva.getPlaca()).getRenta();
+			// Reserva
+			// datos=this.reservaService.buscarAutoReserva(datosReserva.getCedula());
+			System.out.println(precio);
+			this.cobroService.realizarPago(datoReserva.getTarjeta(), precio, nuevaReserva);
+			//modelo.addAttribute("datosReserva", datoReserva);
+			//return "vistaListaReservas";
+		}
 	
 	//1.c REGISTRARSE COMO CLLENTE
 	//http://localhost:8082/API/v1.0/Renta/clientes
@@ -145,19 +143,8 @@ public class ClienteControllerRestFul {
 
 		return "vistaReservar";
 	}
+	
 
-	@PostMapping("/generarReserva")
-	public String reservarAuto(DatoReserva datoReserva, Model modelo) {
-		Reserva nuevaReserva = this.reservaService.reservarVehiculo(datoReserva.getPlaca(), datoReserva.getCedula(),
-				datoReserva.getFechaInicio(), datoReserva.getFechaFin());
-		BigDecimal precio = this.vehiculoService.buscarPorPlaca(datoReserva.getPlaca()).getRenta();
-		// Reserva
-		// datos=this.reservaService.buscarAutoReserva(datosReserva.getCedula());
-		System.out.println(precio);
-		this.cobroService.realizarPago(datoReserva.getTarjeta(), precio, nuevaReserva);
-		modelo.addAttribute("datosReserva", datoReserva);
-		return "vistaListaReservas";
-	}
 
 	@GetMapping("/mostrarDisponibles")
 	public String autosDisponibles(DatoReserva datoReserva) {

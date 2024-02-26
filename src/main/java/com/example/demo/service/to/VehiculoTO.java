@@ -29,12 +29,13 @@ public class VehiculoTO extends RepresentationModel<VehiculoTO>  implements Seri
 	private String paisFabricacion;
 	
 	private String cilindraje;
+	
+	private String combustible;//tipo de combustible
 
 	private BigDecimal avaluo;
 	
 	private BigDecimal renta;
 	
-	private String combustible;
 	
 	//set y get
 

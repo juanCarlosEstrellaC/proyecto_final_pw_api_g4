@@ -42,14 +42,9 @@ public class ClienteServiceImpl implements IClienteService {
 
 	@Override
 	//@Transactional(value = TxType.REQUIRES_NEW)
-	public void actualizar(Cliente cliente) {
-		Cliente c = this.buscarPorId(cliente.getId());
-		String cedu = c.getNumeroCedula();
-		String reg = c.getRegistro();
-		cliente.setNumeroCedula(cedu);
-		cliente.setRegistro(reg);
-		// en el momento de actualizar se obtiene la cedula
-		this.iClienteRepository.actualizar(cliente);
+	public void actualizar(ClienteTO cliente) {
+		Cliente c = this.convertirTOaCliente(cliente);
+		this.iClienteRepository.actualizar(c);
 
 	}
 
@@ -59,6 +54,7 @@ public class ClienteServiceImpl implements IClienteService {
 		cliente.setRegistro("C");
 		
 		Cliente clie = this.convertirTOaCliente(cliente);
+		System.out.println(clie.getNombre());
 		this.iClienteRepository.insertar(clie);
 		
 	}
@@ -77,12 +73,18 @@ public class ClienteServiceImpl implements IClienteService {
 		
 		return clie;
 	}
+	
 	@Override
 	//@Transactional(value = TxType.REQUIRES_NEW)
-	public void registroComoEmpleado(Cliente cliente) {
+	public void registroComoEmpleado(ClienteTO cliente) {
 		cliente.setRegistro("E");
-		this.iClienteRepository.insertar(cliente);
+		
+		Cliente clie = this.convertirTOaCliente(cliente);
+		System.out.println(clie.getRegistro());
+		this.iClienteRepository.insertar(clie);
+		
 	}
+
 
 	@Override
 	//@Transactional(value = TxType.REQUIRES_NEW)

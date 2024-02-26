@@ -12,11 +12,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.repository.IVehiculoRepository;
-
+import com.example.demo.repository.modelo.Cliente;
 import com.example.demo.repository.modelo.Reserva;
 import com.example.demo.repository.modelo.Vehiculo;
-
-
+import com.example.demo.repository.modelo.DTO.VehiculoDTO;
+import com.example.demo.service.to.ClienteTO;
 import com.example.demo.service.to.VehiculoTO;
 
 @Service
@@ -39,17 +39,57 @@ public class VehiculoServiceImpl implements IVehiculoService {
 
 	@Override
 	//@Transactional(value = TxType.REQUIRES_NEW)
-	public void insertar(Vehiculo vehiculo) {
+	public void insertar(VehiculoTO vehiculo) {
 		vehiculo.setEstado("Disponible");
-		this.iVehiculoRepository.ingresarVehiculo(vehiculo);
+		Vehiculo vehi = this.convertirTOaVehiculo(vehiculo);
+		this.iVehiculoRepository.ingresarVehiculo(vehi);
+	}
+	
+	private Vehiculo convertirTOaVehiculo(VehiculoTO vehiculo) {
+		
+		Vehiculo vehi = new Vehiculo();
+		
+		vehi.setId(vehiculo.getId());
+		vehi.setPlaca(vehiculo.getPlaca());
+		vehi.setModelo(vehiculo.getModelo());
+		vehi.setMarca(vehiculo.getMarca());
+		vehi.setAnioFabricacion(vehiculo.getAnioFabricacion());
+		vehi.setEstado(vehiculo.getEstado());
+		vehi.setPaisFabricacion(vehiculo.getPaisFabricacion());
+		vehi.setCilindraje(vehiculo.getCilindraje());
+		vehi.setCombustible(vehiculo.getCombustible());
+		vehi.setAvaluo(vehiculo.getAvaluo());
+		vehi.setRenta(vehiculo.getRenta());
+		
+		return vehi;
 	}
 
 	@Override
 	//@Transactional(value = TxType.REQUIRES_NEW)
-	public void actualizar(Vehiculo vehiculo) {
-		this.iVehiculoRepository.actualizarEstado(vehiculo);
+	public void actualizar(VehiculoTO vehiculo) {
+		Vehiculo vehi = this.convertirToVehiculo(vehiculo);
+		this.iVehiculoRepository.actualizarEstado(vehi);;
 	}
 
+	private Vehiculo convertirToVehiculo(VehiculoTO v) {
+		
+		Vehiculo vehi = new Vehiculo();
+		
+		
+		vehi.setId(v.getId());
+		vehi.setPlaca(v.getPlaca());
+		vehi.setModelo(v.getModelo());
+		vehi.setMarca(v.getMarca());
+		vehi.setAnioFabricacion(v.getAnioFabricacion());
+		vehi.setEstado(v.getEstado());
+		vehi.setPaisFabricacion(v.getPaisFabricacion());
+		vehi.setCilindraje(v.getCilindraje());
+		vehi.setAvaluo(v.getAvaluo());
+		vehi.setRenta(v.getRenta());
+		vehi.setCombustible(v.getCombustible());
+		
+		return vehi;
+	}
 	@Override
 	//@Transactional(value = TxType.REQUIRES_NEW)
 	public void eliminar(Integer id) {
@@ -64,8 +104,15 @@ public class VehiculoServiceImpl implements IVehiculoService {
 
 	@Override
 	//@Transactional(value = TxType.REQUIRES_NEW)
-	public List<Vehiculo> buscarPorMarca(String marca) {
-		return this.iVehiculoRepository.buscarPorMarca(marca);
+	public List<VehiculoTO> buscarPorMarca(String marca) {
+		
+		List<Vehiculo> lista = this.iVehiculoRepository.buscarPorMarca(marca);
+		List<VehiculoTO> listaFinal = new ArrayList<>();
+		
+		for(Vehiculo vehi : lista) {
+			listaFinal.add(this.convertir(vehi));
+		}
+		return listaFinal;
 	}
 
 	@Override
@@ -111,5 +158,11 @@ public class VehiculoServiceImpl implements IVehiculoService {
 		vehiTO.setCombustible(v.getCombustible());
 		
 		return vehiTO;
+	}
+
+	@Override
+	public List<VehiculoDTO> buscarVehiculosPorMarcayModelo(String marca, String modelo) {
+		// TODO Auto-generated method stub
+		return this.iVehiculoRepository.buscarVehiculosPorMarcayModelo(marca, modelo);
 	}
 }

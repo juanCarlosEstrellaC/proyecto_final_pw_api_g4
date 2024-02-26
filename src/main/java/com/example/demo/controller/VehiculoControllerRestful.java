@@ -1,5 +1,9 @@
 package com.example.demo.controller;
 
+//METODOS ESTÁTICOS
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,12 +17,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.repository.modelo.DTO.VehiculoDTO;
 import com.example.demo.service.IVehiculoService;
 import com.example.demo.service.to.VehiculoTO;
-
-//METODOS ESTÁTICOS
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController//Servicio
 @RequestMapping(path="/vehiculos")
@@ -31,17 +32,17 @@ public class VehiculoControllerRestful {
 	//1.a: BUSCAR VEHICULOS DISPONIBLES
 	//http://localhost:8082/API/v1.0/Renta/vehiculos/buscarAutos?marca=nombreMarca&modelo=nombreModelo
 	@GetMapping(path="/buscarAutos", produces = "application/json")
-	public ResponseEntity<List<VehiculoTO>> buscaPorMarcayModelo(
+	public ResponseEntity<List<VehiculoDTO>> buscaPorMarcayModelo(
 	        @RequestParam(required = false) String marca,
 	        @RequestParam(required = false) String modelo) {
 	   
-	    List<VehiculoTO> lista = new ArrayList<>();
+	    List<VehiculoDTO> lista = new ArrayList<>();
 	    
 	    if (marca != null || modelo != null) {
-	        lista = this.vehiculoService.buscarPorMarcayModelo(marca, modelo);
+	        lista = this.vehiculoService.buscarVehiculosPorMarcayModelo(marca, modelo);
 	    } 
 
-	     for(VehiculoTO vehi: lista) {
+	     for(VehiculoDTO vehi: lista) {
 	         Link link = linkTo(methodOn(VehiculoControllerRestful.class).buscaPorMarcayModelo(marca, modelo)).withSelfRel();
 	        vehi.add(link);
 	     }
