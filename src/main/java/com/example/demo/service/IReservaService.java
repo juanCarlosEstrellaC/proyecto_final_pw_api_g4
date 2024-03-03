@@ -4,8 +4,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import com.example.demo.repository.modelo.Reserva;
-
-import com.example.demo.repository.modelo.Vehiculo;
+import com.example.demo.repository.modelo.DTO.ReservaDTO;
 import com.example.demo.service.to.ReporteTO;
 import com.example.demo.service.to.ReservaTO;
 
@@ -17,7 +16,7 @@ public interface IReservaService {
 
 	public void retiro(String numero);
 
-	public Reserva buscarAutoReserva(String numero);
+	public ReservaDTO buscarAutoReserva(String numeroReserva);
 
 	//public List<ReservaTo> buscarPorFechas(LocalDate fechaInicio, LocalDate fechaFin);
 

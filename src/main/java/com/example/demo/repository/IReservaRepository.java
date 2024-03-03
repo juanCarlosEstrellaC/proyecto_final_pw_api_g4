@@ -16,7 +16,7 @@ public interface IReservaRepository {
 
 	public List<Reserva> buscarReserva(String placa);
 
-	public Reserva buscarAutoReserva(String numero);
+	public Reserva buscarAutoReserva(String numeroReserva);
 
 	public Reserva buscarPlaca(Integer id, String placa);
 

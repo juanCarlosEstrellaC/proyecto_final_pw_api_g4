@@ -16,6 +16,7 @@ import com.example.demo.repository.modelo.Cliente;
 import com.example.demo.repository.modelo.Reserva;
 
 import com.example.demo.repository.modelo.Vehiculo;
+import com.example.demo.repository.modelo.DTO.ReservaDTO;
 import com.example.demo.service.to.ReporteTO;
 import com.example.demo.service.to.ReservaTO;
 
@@ -105,8 +106,20 @@ public class ReservaServiceImpl implements IReservaService {
 
 	@Override
 	//@Transactional(value = TxType.REQUIRES_NEW)
-	public Reserva buscarAutoReserva(String numero) {
-		return this.reservaRepository.buscarAutoReserva(numero);
+	public ReservaDTO buscarAutoReserva(String numero) {
+		
+		Reserva reserva=this.reservaRepository.buscarAutoReserva(numero);
+		Vehiculo vehiculo = this.vehiculoRepository.buscarPorPlaca(reserva.getVehiculo().getPlaca());
+		
+		ReservaDTO reservadto= new ReservaDTO();
+		reservadto.setPlaca(vehiculo.getPlaca());
+		reservadto.setEstado(vehiculo.getEstado());
+		reservadto.setModelo(vehiculo.getModelo());
+		reservadto.setFecha(reserva.getFechaFin());
+		reservadto.setReservadoPor(reserva.getNumero());
+		
+		return  reservadto;
+			
 	}
 
 /*	@Override

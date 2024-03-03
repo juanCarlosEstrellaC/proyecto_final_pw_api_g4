@@ -1,11 +1,16 @@
 package com.example.demo.repository.modelo.DTO;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 import org.springframework.hateoas.RepresentationModel;
 
-public class VehiculoDTO extends RepresentationModel<VehiculoDTO>{
+public class VehiculoDTO extends RepresentationModel<VehiculoDTO> implements Serializable{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5226029326240786334L;
 	// Vehiculo
 	private String placa;
 	private String modelo;
@@ -14,19 +19,7 @@ public class VehiculoDTO extends RepresentationModel<VehiculoDTO>{
 	private String estado;
 	private BigDecimal renta;
 	
-	public VehiculoDTO() {
-		
-	}
-	
-	public VehiculoDTO(String placa, String modelo, String marca,String anio, String estado, BigDecimal renta) {
-		super();
-		this.placa = placa;
-		this.modelo = modelo;
-		this.marca = marca;
-		this.anio = anio;
-		this.estado = estado;
-		this.renta = renta;
-	}
+
 
 	@Override
 	public String toString() {

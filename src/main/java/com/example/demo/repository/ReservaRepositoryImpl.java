@@ -44,10 +44,10 @@ public class ReservaRepositoryImpl implements IReservaRepository {
 
 	@Override
 	//@Transactional(value = TxType.NOT_SUPPORTED)
-	public Reserva buscarAutoReserva(String numero) {
+	public Reserva buscarAutoReserva(String numeroReserva) {
 		TypedQuery<Reserva> myQuery = this.entityManager
-				.createQuery("SELECT r FROM Reserva r WHERE r.numero=:datoNumero", Reserva.class);
-		myQuery.setParameter("datoNumero", numero);
+				.createQuery("SELECT r FROM Reserva r WHERE r.numeroReserva=:datoNumero", Reserva.class);
+		myQuery.setParameter("datoNumero", numeroReserva);
 		return myQuery.getSingleResult();
 	}
 
