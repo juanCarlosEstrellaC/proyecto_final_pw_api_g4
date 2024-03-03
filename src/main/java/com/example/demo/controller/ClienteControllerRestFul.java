@@ -85,12 +85,24 @@ public class ClienteControllerRestFul {
 			//return "vistaListaReservas";
 		}
 	
-	//1.c REGISTRARSE COMO CLLENTE
-	//http://localhost:8082/API/v1.0/Renta/clientes
-	@PostMapping(consumes =MediaType.APPLICATION_JSON_VALUE)
-	public void guardar(@RequestBody ClienteTO cliente) {//en la inserción no se coloca el id
-		this.iClienteService.registro(cliente);
-	}
+		// 1.c REGISTRARSE COMO CLLENTE
+		// http://localhost:8082/API/v1.0/Renta/clientes
+		@PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+		public ResponseEntity<Integer> guardar(@RequestBody ClienteTO cliente) {
+			System.out.println("ClienteTO: " + cliente);
+			try {
+				boolean registroExitoso = this.iClienteService.registro(cliente);
+				if (registroExitoso) {
+					return ResponseEntity.status(HttpStatus.CREATED).body(1);
+				} else {
+					return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(0);
+
+				}
+			} catch (Exception e) {
+				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(0);
+			}
+		}
+
 	
 	//1.d ACTUALIZAR CLIENTE, A EXCEPCIÓN DE LA CÉDULA
 	//http://localhost:8082/API/v1.0/Renta/clientes/id

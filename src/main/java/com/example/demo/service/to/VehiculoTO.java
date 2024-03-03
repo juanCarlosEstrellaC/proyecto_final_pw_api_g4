@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 
 import org.springframework.hateoas.RepresentationModel;
 
-import jakarta.persistence.Column;
+
 
 public class VehiculoTO extends RepresentationModel<VehiculoTO>  implements Serializable{
 	

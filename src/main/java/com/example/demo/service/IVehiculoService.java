@@ -22,7 +22,7 @@ public interface IVehiculoService {
 
 	public List<VehiculoTO> buscarPorMarca(String marca);
 
-	public Vehiculo buscarPorPlaca(String placa);
+	public VehiculoTO buscarPorPlaca(String placa);
 
 	public List<Vehiculo> buscarFechas(String fechaInicio, String fechaFin);
 

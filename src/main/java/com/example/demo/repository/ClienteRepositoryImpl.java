@@ -3,13 +3,13 @@ package com.example.demo.repository;
 import java.time.LocalDate;
 import java.util.List;
 
-import org.springframework.stereotype.Repository;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
-import jakarta.persistence.Query;
-import jakarta.persistence.TypedQuery;
-import jakarta.transaction.Transactional;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import javax.persistence.TypedQuery;
+import javax.transaction.Transactional;
 
+import org.springframework.stereotype.Repository;
 
 import com.example.demo.repository.modelo.Cliente;
 
@@ -24,17 +24,22 @@ public class ClienteRepositoryImpl implements IClienteRepository {
 	//@Transactional(value = TxType.NOT_SUPPORTED)
 	public Cliente buscarCedula(String cedula) {
 		TypedQuery<Cliente> myQuery = this.entityManager
-				.createQuery("SELECT c FROM Cliente c WHERE c.numeroCedula=:datoCedula", Cliente.class);
+				.createQuery("SELECT c FROM Cliente c WHERE c.numeroCedula= :datoCedula", Cliente.class);
 		myQuery.setParameter("datoCedula", cedula);
 		return myQuery.getSingleResult();
 	}
 
 	@Override
 	//@Transactional(value = TxType.MANDATORY)
-	public void insertar(Cliente cliente) {
-		this.entityManager.persist(cliente);
+	public boolean insertar(Cliente cliente) {
+	    try {
+	        this.entityManager.persist(cliente); 
+	        return true; 
+	    } catch (Exception e) {
+	    	System.out.println(e.getMessage());
+	    	return false; 
+	    }
 	}
-
 	@Override
 	//@Transactional(value = TxType.NOT_SUPPORTED)
 	public List<Cliente> buscarPorApellido(String apellido) {
@@ -59,7 +64,18 @@ public class ClienteRepositoryImpl implements IClienteRepository {
 	@Override
 	//@Transactional(value = TxType.MANDATORY)
 	public void actualizar(Cliente cliente) {
-		this.entityManager.merge(cliente);
+		//this.entityManager.merge(cliente);
+	
+	Query query = this.entityManager.createQuery(
+			"UPDATE Cliente c SET c.nombre= :valor1, c.apellido= : valor2, c.numeroCedula= :valor3, c.fechaNacimiento= : valor4, c.genero= :valor5 WHERE c.id= :valor6");
+	
+	 query.setParameter("valor1", cliente.getNombre()); 
+	 query.setParameter("valor2", cliente.getApellido());
+	 query.setParameter("valor3", cliente.getNumeroCedula()); 
+	 query.setParameter("valor4", cliente.getFechaNacimiento()); 
+	 query.setParameter("valor5", cliente.getGenero());
+	 query.setParameter("valor6", cliente.getId());
+	 query.executeUpdate();
 	}
 
 	@Override

@@ -13,7 +13,7 @@ public interface IClienteRepository {
 
 	public void eliminar(Integer id);
 
-	public void insertar(Cliente cliente);
+	public boolean insertar(Cliente cliente);
 
 	public Cliente buscarCedula(String cedula);
 

@@ -1,11 +1,18 @@
 package com.example.demo.repository.modelo.DTO;
 
 import java.math.BigDecimal;
+import java.io.Serializable;
 
 import org.springframework.hateoas.RepresentationModel;
 
-public class VehiculoDTO extends RepresentationModel<VehiculoDTO>{
 
+
+public class VehiculoDTO extends RepresentationModel<VehiculoDTO> implements Serializable{
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5226029326240786334L;
 	// Vehiculo
 	private String placa;
 	private String modelo;

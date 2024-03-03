@@ -4,7 +4,6 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +11,7 @@ import org.springframework.hateoas.Link;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,9 +21,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.example.demo.repository.modelo.Cliente;
 import com.example.demo.repository.modelo.Vehiculo;
 import com.example.demo.service.IClienteService;
 import com.example.demo.service.IReservaService;
@@ -32,10 +29,7 @@ import com.example.demo.service.IVehiculoService;
 import com.example.demo.service.to.ClienteTO;
 import com.example.demo.service.to.VehiculoTO;
 
-//METODOS ESTÁTICOS
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
-
+@CrossOrigin
 @RestController//Servicio
 @RequestMapping("/empleados")
 public class EmpleadoController {
@@ -76,6 +70,22 @@ public class EmpleadoController {
 			}	
 			return ResponseEntity.status(HttpStatus.OK).body(lista); 
 	}
+	
+	
+	//2.b: Visualizar CLIENTES POR cedula
+		//http://localhost:8082/API/v1.0/Renta/empleados/id
+	
+	@GetMapping(path="/{cedula}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<ClienteTO> buscarClienteCedula(@PathVariable String cedula){
+		
+		System.out.println(cedula);
+		ClienteTO cliente = this.iClienteService.buscarPorCedula(cedula);
+		System.out.println(cedula);
+		System.out.println(cliente);
+		return ResponseEntity.status(HttpStatus.OK).body(cliente);
+		
+	}
+	
 
 	//2.b: ACTUALIZAR TODOS LOS DATOS DEL CLIENTE
 	//http://localhost:8082/API/v1.0/Renta/empleados/id
@@ -106,7 +116,7 @@ public class EmpleadoController {
 
 
 	//2.d BUSCAR VEHICULO POR MARCA
-	//http://localhost:8082/API/v1.0/Renta/empleados
+	//http://localhost:8082/API/v1.0/Renta/empleados/
 	@GetMapping(path="/buscarVehiculo",produces = "application/json")
 	public ResponseEntity<List<VehiculoTO>> buscarPorMarca(@RequestParam(required = false) String marca) {
 		List<VehiculoTO> lista = this.iVehiculoService.buscarPorMarca(marca);
@@ -126,6 +136,19 @@ public class EmpleadoController {
 		vehiculo.setId(id);
 		this.iVehiculoService.actualizar(vehiculo);
 		//List<String> estadoL = Arrays.asList("Disponible", "No Disponible");
+		
+	}
+	
+	//2.d: visualizar por Placa
+	//http://localhost:8082/API/v1.0/Renta/empleados/buscarVehiculo/{placa}
+	@GetMapping(path="/buscarVehiculo/{placa}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<VehiculoTO> buscarVehiculoPlaca(@PathVariable String placa){
+		
+		System.out.println(placa);
+		VehiculoTO vehiculoTO = this.iVehiculoService.buscarPorPlaca(placa);
+		System.out.println(placa);
+		System.out.println(placa);
+		return ResponseEntity.status(HttpStatus.OK).body(vehiculoTO);
 		
 	}
 

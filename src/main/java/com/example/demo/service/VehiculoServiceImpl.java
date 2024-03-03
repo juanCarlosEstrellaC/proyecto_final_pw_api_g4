@@ -26,29 +26,29 @@ public class VehiculoServiceImpl implements IVehiculoService {
 	private IVehiculoRepository iVehiculoRepository;
 
 	@Override
-	//@Transactional(value = TxType.REQUIRES_NEW)
+	// @Transactional(value = TxType.REQUIRES_NEW)
 	public List<Vehiculo> vehiculosDisponibles(String marca, String modelo) {
 		return this.iVehiculoRepository.vehiculosDisponibles(marca, modelo);
 	}
 
 	@Override
-	//@Transactional(value = TxType.REQUIRES_NEW)
+	// @Transactional(value = TxType.REQUIRES_NEW)
 	public Vehiculo buscarPorId(Integer id) {
 		return this.iVehiculoRepository.buscarPorId(id);
 	}
 
 	@Override
-	//@Transactional(value = TxType.REQUIRES_NEW)
+	// @Transactional(value = TxType.REQUIRES_NEW)
 	public void insertar(VehiculoTO vehiculo) {
 		vehiculo.setEstado("Disponible");
 		Vehiculo vehi = this.convertirTOaVehiculo(vehiculo);
 		this.iVehiculoRepository.ingresarVehiculo(vehi);
 	}
-	
+
 	private Vehiculo convertirTOaVehiculo(VehiculoTO vehiculo) {
-		
+
 		Vehiculo vehi = new Vehiculo();
-		
+
 		vehi.setId(vehiculo.getId());
 		vehi.setPlaca(vehiculo.getPlaca());
 		vehi.setModelo(vehiculo.getModelo());
@@ -60,22 +60,24 @@ public class VehiculoServiceImpl implements IVehiculoService {
 		vehi.setCombustible(vehiculo.getCombustible());
 		vehi.setAvaluo(vehiculo.getAvaluo());
 		vehi.setRenta(vehiculo.getRenta());
-		
+
 		return vehi;
 	}
 
 	@Override
-	//@Transactional(value = TxType.REQUIRES_NEW)
+	// @Transactional(value = TxType.REQUIRES_NEW)
 	public void actualizar(VehiculoTO vehiculo) {
+		
+		
 		Vehiculo vehi = this.convertirToVehiculo(vehiculo);
-		this.iVehiculoRepository.actualizarEstado(vehi);;
+		this.iVehiculoRepository.actualizarEstado(vehi);
+		;
 	}
 
 	private Vehiculo convertirToVehiculo(VehiculoTO v) {
-		
+
 		Vehiculo vehi = new Vehiculo();
-		
-		
+
 		vehi.setId(v.getId());
 		vehi.setPlaca(v.getPlaca());
 		vehi.setModelo(v.getModelo());
@@ -87,64 +89,64 @@ public class VehiculoServiceImpl implements IVehiculoService {
 		vehi.setAvaluo(v.getAvaluo());
 		vehi.setRenta(v.getRenta());
 		vehi.setCombustible(v.getCombustible());
-		
+
 		return vehi;
 	}
+
 	@Override
-	//@Transactional(value = TxType.REQUIRES_NEW)
+	// @Transactional(value = TxType.REQUIRES_NEW)
 	public void eliminar(Integer id) {
 		this.iVehiculoRepository.eliminar(id);
 	}
 
 	@Override
-	//@Transactional(value = TxType.REQUIRES_NEW)
+	// @Transactional(value = TxType.REQUIRES_NEW)
 	public List<Vehiculo> buscarTodos() {
 		return this.iVehiculoRepository.buscarTodos();
 	}
 
 	@Override
-	//@Transactional(value = TxType.REQUIRES_NEW)
+	// @Transactional(value = TxType.REQUIRES_NEW)
 	public List<VehiculoTO> buscarPorMarca(String marca) {
-		
+
 		List<Vehiculo> lista = this.iVehiculoRepository.buscarPorMarca(marca);
 		List<VehiculoTO> listaFinal = new ArrayList<>();
-		
-		for(Vehiculo vehi : lista) {
+
+		for (Vehiculo vehi : lista) {
 			listaFinal.add(this.convertir(vehi));
 		}
 		return listaFinal;
 	}
 
 	@Override
-	//@Transactional(value = TxType.REQUIRES_NEW)
-	public Vehiculo buscarPorPlaca(String placa) {
+	// @Transactional(value = TxType.REQUIRES_NEW)
+	public VehiculoTO buscarPorPlaca(String placa) {
 		// TODO Auto-generated method stub
-		return this.iVehiculoRepository.buscarPorPlaca(placa);
+
+		return this.convertir(this.iVehiculoRepository.buscarPorPlaca(placa));
 	}
 
 	@Override
-	//@Transactional(value = TxType.REQUIRES_NEW)
+	// @Transactional(value = TxType.REQUIRES_NEW)
 	public List<Vehiculo> buscarFechas(String fechaInicio, String fechaFin) {
 		// TODO Auto-generated method stub
 		return this.iVehiculoRepository.buscarPorFechas(fechaInicio, fechaFin);
 	}
-	
 
-	
 	@Override
 	public List<VehiculoTO> buscarPorMarcayModelo(String marca, String Modelo) {
 		List<Vehiculo> lista = this.iVehiculoRepository.buscarPorMarcayModelo(marca, Modelo);
 		List<VehiculoTO> listaFinal = new ArrayList<>();
-		
-		for(Vehiculo vehi: lista) {
+
+		for (Vehiculo vehi : lista) {
 			listaFinal.add(this.convertir(vehi));
 		}
 		return listaFinal;
 	}
-	
+
 	private VehiculoTO convertir(Vehiculo v) {
 		VehiculoTO vehiTO = new VehiculoTO();
-		
+
 		vehiTO.setId(v.getId());
 		vehiTO.setPlaca(v.getPlaca());
 		vehiTO.setModelo(v.getModelo());
@@ -156,7 +158,7 @@ public class VehiculoServiceImpl implements IVehiculoService {
 		vehiTO.setAvaluo(v.getAvaluo());
 		vehiTO.setRenta(v.getRenta());
 		vehiTO.setCombustible(v.getCombustible());
-		
+
 		return vehiTO;
 	}
 

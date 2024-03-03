@@ -5,7 +5,7 @@ import java.time.LocalDate;
 
 import org.springframework.hateoas.RepresentationModel;
 
-import jakarta.persistence.Column;
+
 
 public class ClienteTO extends RepresentationModel<ClienteTO>  implements Serializable{
 

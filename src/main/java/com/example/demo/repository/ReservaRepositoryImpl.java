@@ -3,16 +3,16 @@ package com.example.demo.repository;
 import java.time.LocalDate;
 import java.util.List;
 
-import org.springframework.stereotype.Repository;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
+import javax.transaction.Transactional;
 
+import org.springframework.stereotype.Repository;
 
 import com.example.demo.repository.modelo.Reserva;
 
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
-import jakarta.persistence.TypedQuery;
-import jakarta.transaction.Transactional;
 
 @Repository
 @Transactional
@@ -44,10 +44,10 @@ public class ReservaRepositoryImpl implements IReservaRepository {
 
 	@Override
 	//@Transactional(value = TxType.NOT_SUPPORTED)
-	public Reserva buscarAutoReserva(String numero) {
+	public Reserva buscarAutoReserva(String numeroReserva) {
 		TypedQuery<Reserva> myQuery = this.entityManager
-				.createQuery("SELECT r FROM Reserva r WHERE r.numero=:datoNumero", Reserva.class);
-		myQuery.setParameter("datoNumero", numero);
+				.createQuery("SELECT r FROM Reserva r WHERE r.numeroReserva=:datoNumero", Reserva.class);
+		myQuery.setParameter("datoNumero", numeroReserva);
 		return myQuery.getSingleResult();
 	}
 

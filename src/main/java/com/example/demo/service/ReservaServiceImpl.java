@@ -16,8 +16,9 @@ import com.example.demo.repository.modelo.Cliente;
 import com.example.demo.repository.modelo.Reserva;
 
 import com.example.demo.repository.modelo.Vehiculo;
+import com.example.demo.repository.modelo.DTO.ReservaDTO;
+import com.example.demo.service.to.ReporteTO;
 import com.example.demo.service.to.ReservaTO;
-import com.example.demo.service.to.VehiculoTO;
 
 @Service
 public class ReservaServiceImpl implements IReservaService {
@@ -105,8 +106,20 @@ public class ReservaServiceImpl implements IReservaService {
 
 	@Override
 	//@Transactional(value = TxType.REQUIRES_NEW)
-	public Reserva buscarAutoReserva(String numero) {
-		return this.reservaRepository.buscarAutoReserva(numero);
+	public ReservaDTO buscarAutoReserva(String numero) {
+		
+		Reserva reserva=this.reservaRepository.buscarAutoReserva(numero);
+		Vehiculo vehiculo = this.vehiculoRepository.buscarPorPlaca(reserva.getVehiculo().getPlaca());
+		
+		ReservaDTO reservadto= new ReservaDTO();
+		reservadto.setPlaca(vehiculo.getPlaca());
+		reservadto.setEstado(vehiculo.getEstado());
+		reservadto.setModelo(vehiculo.getModelo());
+		reservadto.setFecha(reserva.getFechaFin());
+		reservadto.setReservadoPor(reserva.getNumero());
+		
+		return  reservadto;
+			
 	}
 
 /*	@Override
@@ -173,5 +186,45 @@ public class ReservaServiceImpl implements IReservaService {
 		
 	}
 
-	
-}
+	@Override
+	public List<ReporteTO> Reporte(LocalDate fechaInicio, LocalDate fechaFin) {
+		List<Reserva> lista = this.reservaRepository.buscarPorFechas(fechaInicio, fechaFin);
+		List<ReporteTO> listaFinal = new ArrayList<>();
+		ReporteTO reporteTO = new ReporteTO();
+
+
+		for (Reserva res : lista) {
+			
+			Cliente cliente = this.clienteRepository.buscarPorId(res.getCliente().getId());
+			Vehiculo vehiculo = this.vehiculoRepository.buscarPorPlaca(res.getVehiculo().getPlaca());
+			reporteTO.setNumeroReserva(res.getNumero());
+			reporteTO.setDiasReserva(res.getDiasReserva());
+			reporteTO.setFechaInicio(res.getFechaInicio());
+			reporteTO.setFechaFin(res.getFechaFin());
+			reporteTO.setEstado(res.getEstado());
+			reporteTO.setApellido(cliente.getApellido());
+			reporteTO.setNumeroCedula(cliente.getNumeroCedula());
+			reporteTO.setPlaca(vehiculo.getPlaca());
+			reporteTO.setModelo(vehiculo.getModelo());
+			reporteTO.setMarca(vehiculo.getMarca());
+			listaFinal.add(reporteTO);
+		}
+
+		return listaFinal;
+	}
+
+	@Override
+	public void retirarVehiculo(String numeroReserva) {
+		// TODO Auto-generated method stub
+	//Funcionalidad que permitirá retirar un vehículo previamente reservado; el sistema permitirá ingresar un número de reserva 
+	//y cambiará el estado de la reserva a "ejecutada" y el estado del vehículo a "No Disponible"
+		Reserva reserva = this.reservaRepository.buscarAutoReserva(numeroReserva);
+		reserva.setEstado("Ejecutada");
+		this.reservaRepository.actualizarReserva(reserva);
+		Vehiculo vehiculo = this.vehiculoRepository.buscarPorPlaca(reserva.getVehiculo().getPlaca());
+		vehiculo.setEstado("No Disponible");
+		this.vehiculoRepository.actualizarEstado(vehiculo);	
+	}
+			
+		
+	}

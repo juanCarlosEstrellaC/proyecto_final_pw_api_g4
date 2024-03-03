@@ -9,7 +9,7 @@ import com.example.demo.service.to.ClienteTO;
 
 public interface IClienteService {
 
-	public void registro(ClienteTO cliente);
+	public boolean registro(ClienteTO cliente);
 
 	public void registroComoEmpleado(ClienteTO cliente);
 
@@ -21,7 +21,7 @@ public interface IClienteService {
 
 	public void actualizar(ClienteTO cliente);
 
-	public Cliente buscarPorCedula(String cedula);
+	public ClienteTO buscarPorCedula(String cedula);
 
 	public List<ClienteTO> buscarTodos();
 
