@@ -4,14 +4,13 @@ import java.time.LocalDate;
 import java.util.List;
 
 import com.example.demo.repository.modelo.Cliente;
-
 import com.example.demo.service.to.ClienteTO;
 
 public interface IClienteService {
 
 	public boolean registro(ClienteTO cliente);
 
-	public void registroComoEmpleado(ClienteTO cliente);
+	public boolean registroComoEmpleado(ClienteTO cliente);
 
 	public List<ClienteTO> buscarPorApellido(String apellido);
 
@@ -26,5 +25,6 @@ public interface IClienteService {
 	public List<ClienteTO> buscarTodos();
 
 	public void actualizarParcial(String nombre, String apellido, LocalDate fechaNacimiento,String genero,String registro,Integer id);
-	
+	public boolean existeClienteConCedula(String placa);
+	public boolean validarCliente(ClienteTO cliente);
 }

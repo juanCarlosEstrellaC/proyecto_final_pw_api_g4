@@ -95,7 +95,7 @@ public class ClienteRepositoryImpl implements IClienteRepository {
 		query.setParameter("valor2", apellido);
 		query.setParameter("valor3", fechaNacimiento);
 		query.setParameter("valor4", genero);
-		query.setParameter("valor5", registro);
+		query.setParameter("valor5", "C");
 		query.setParameter("valor6", id);
 		
 		query.executeUpdate();

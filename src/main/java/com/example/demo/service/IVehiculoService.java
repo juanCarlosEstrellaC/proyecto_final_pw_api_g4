@@ -12,7 +12,7 @@ public interface IVehiculoService {
 
 	public Vehiculo buscarPorId(Integer id);
 
-	public void insertar(VehiculoTO vehiculo);
+	public boolean insertar(VehiculoTO vehiculo);
 
 	public void actualizar(VehiculoTO vehiculo);
 
@@ -29,4 +29,6 @@ public interface IVehiculoService {
 	public List<VehiculoTO> buscarPorMarcayModelo(String marca, String Modelo);
 	
 	public List<VehiculoDTO> buscarVehiculosPorMarcayModelo(String marca, String modelo);
+
+	public boolean existeVehiculoConPlaca(String placa);
 }

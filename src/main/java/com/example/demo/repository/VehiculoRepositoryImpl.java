@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Set;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
@@ -24,30 +25,38 @@ public class VehiculoRepositoryImpl implements IVehiculoRepository {
 
 	@Override
 	// @Transactional(value = TxType.MANDATORY)
-	public void ingresarVehiculo(Vehiculo vehiculo) {
-		this.entityManager.persist(vehiculo);
+	public boolean ingresarVehiculo(Vehiculo vehiculo) {
+
+		try {
+			this.entityManager.persist(vehiculo);
+			return true;
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+			return false;
+		}
+
 	}
 
 	@Override
 	// @Transactional(value = TxType.MANDATORY)
 	public void actualizarEstado(Vehiculo vh) {
 
-		//this.entityManager.merge(vh);
+		// this.entityManager.merge(vh);
 
 		Query query = this.entityManager.createQuery(
 				"UPDATE Vehiculo v SET v.placa= :valor1, v.marca= : valor2, v.modelo= :valor3, v.anioFabricacion= : valor4, v.paisFabricacion= :valor5, v.cilindraje= : valor6, v.avaluo= :valor7, v.renta= : valor8 WHERE v.id= :valor9");
-		
-		 query.setParameter("valor1", vh.getPlaca()); 
-		 query.setParameter("valor2", vh.getMarca());
-		 query.setParameter("valor3", vh.getModelo()); 
-		 query.setParameter("valor4", vh.getAnioFabricacion()); 
-		 query.setParameter("valor5", vh.getPaisFabricacion());
-		 query.setParameter("valor6", vh.getCilindraje()); 
-		 query.setParameter("valor7", vh.getAvaluo());
-		 query.setParameter("valor8", vh.getRenta());
-		 query.setParameter("valor9", vh.getId());
-		 query.executeUpdate();
-		 
+
+		query.setParameter("valor1", vh.getPlaca());
+		query.setParameter("valor2", vh.getMarca());
+		query.setParameter("valor3", vh.getModelo());
+		query.setParameter("valor4", vh.getAnioFabricacion());
+		query.setParameter("valor5", vh.getPaisFabricacion());
+		query.setParameter("valor6", vh.getCilindraje());
+		query.setParameter("valor7", vh.getAvaluo());
+		query.setParameter("valor8", vh.getRenta());
+		query.setParameter("valor9", vh.getId());
+		query.executeUpdate();
+
 	}
 
 	@Override
@@ -63,10 +72,18 @@ public class VehiculoRepositoryImpl implements IVehiculoRepository {
 	@Override
 	// @Transactional(value = TxType.NOT_SUPPORTED)
 	public Vehiculo buscarPorPlaca(String placa) {
-		TypedQuery<Vehiculo> myQuery = this.entityManager
-				.createQuery("SELECT v FROM Vehiculo v WHERE v.placa=:datoPlaca ", Vehiculo.class);
-		myQuery.setParameter("datoPlaca", placa);
-		return myQuery.getSingleResult();
+
+		try {
+			TypedQuery<Vehiculo> myQuery = this.entityManager
+					.createQuery("SELECT v FROM Vehiculo v WHERE v.placa=:datoPlaca", Vehiculo.class);
+			myQuery.setParameter("datoPlaca", placa);
+			return myQuery.getSingleResult();
+		}  catch (Exception e) {
+			// Manejar otras excepciones de manera más general
+			System.out.println("Error al buscar el vehículo por placa: " + e.getMessage());
+			return null;
+		}
+
 	}
 
 	@Override
@@ -92,10 +109,19 @@ public class VehiculoRepositoryImpl implements IVehiculoRepository {
 	@Override
 	// @Transactional(value = TxType.NOT_SUPPORTED)
 	public List<Vehiculo> buscarPorMarca(String marca) {
-		TypedQuery<Vehiculo> myQuery = this.entityManager
-				.createQuery("SELECT v FROM Vehiculo v WHERE v.marca =:datoMarca", Vehiculo.class);
-		myQuery.setParameter("datoMarca", marca);
-		return myQuery.getResultList();
+
+		try {
+			TypedQuery<Vehiculo> myQuery = this.entityManager
+					.createQuery("SELECT v FROM Vehiculo v WHERE v.marca =:datoMarca", Vehiculo.class);
+			myQuery.setParameter("datoMarca", marca);
+			return myQuery.getResultList();
+		} catch (Exception e) {
+			// Manejar otras excepciones de manera más general
+			System.out.println("Error al buscar el vehículo por placa: " + e.getMessage());
+			
+		}
+		return null;
+
 	}
 
 	@Override

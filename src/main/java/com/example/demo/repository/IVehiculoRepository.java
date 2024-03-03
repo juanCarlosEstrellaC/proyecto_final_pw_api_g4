@@ -8,7 +8,7 @@ import com.example.demo.repository.modelo.DTO.VehiculoDTO;
 
 public interface IVehiculoRepository {
 
-	public void ingresarVehiculo(Vehiculo v);
+	public boolean ingresarVehiculo(Vehiculo v);
 
 	public void actualizarEstado(Vehiculo v);
 
