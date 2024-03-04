@@ -13,7 +13,7 @@ public class ReservaDTO implements Serializable{
 	private String placa;
 	private String modelo;
 	private String estado;
-	private LocalDate fecha;
+	private String fecha;
 	private String reservadoPor;
 
 
@@ -37,10 +37,12 @@ public class ReservaDTO implements Serializable{
 		this.estado = estado;
 	}
 
-	public LocalDate getFecha() {
+	
+	
+	public String getFecha() {
 		return fecha;
 	}
-	public void setFecha(LocalDate fecha) {
+	public void setFecha(String fecha) {
 		this.fecha = fecha;
 	}
 	public String getReservadoPor() {

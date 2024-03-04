@@ -24,7 +24,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.demo.repository.modelo.DatoReserva;
 import com.example.demo.repository.modelo.Reserva;
 import com.example.demo.repository.modelo.Vehiculo;
 import com.example.demo.service.IClienteService;
@@ -32,6 +31,7 @@ import com.example.demo.service.ICobroService;
 import com.example.demo.service.IReservaService;
 import com.example.demo.service.IVehiculoService;
 import com.example.demo.service.to.ClienteTO;
+import com.example.demo.service.to.DatosReservaTO;
 import com.example.demo.service.to.ReservaTO;
 
 
@@ -54,6 +54,19 @@ public class ClienteControllerRestFul {
 
 	//BUSCAR TODOS LOS CLIENTES
 	//http://localhost:8082/API/v1.0/Renta/clientes
+	
+	// Buscar Clientes desde el cliente.
+		// http://localhost:8082/API/v1.0/Renta/clientes
+		@GetMapping(path = "/{cedula}", produces = MediaType.APPLICATION_JSON_VALUE)
+		public ResponseEntity<ClienteTO> buscarClienteCedula(@PathVariable String cedula) {
+			System.out.println(cedula);
+			ClienteTO cliente = this.iClienteService.buscarPorCedula(cedula);
+			System.out.println(cedula);
+			System.out.println(cliente);
+			return ResponseEntity.status(HttpStatus.OK).body(cliente);
+	 
+		}
+	
 	@GetMapping
 	public  ResponseEntity<List<ClienteTO>> buscarTodos() {
 		List<ClienteTO> lista = this.iClienteService.buscarTodos();
@@ -73,7 +86,7 @@ public class ClienteControllerRestFul {
 	
 	//1.b: RESERVAR VEHICULO
 		@PostMapping(path="/generarReserva",consumes =MediaType.APPLICATION_JSON_VALUE)
-		public void reservarAuto(DatoReserva datoReserva, Model modelo) {
+		public void reservarAuto(@RequestBody DatosReservaTO datoReserva) {
 			Reserva nuevaReserva = this.reservaService.reservarVehiculo(datoReserva.getPlaca(), datoReserva.getCedula(),
 					datoReserva.getFechaInicio(), datoReserva.getFechaFin());
 			BigDecimal precio = this.vehiculoService.buscarPorPlaca(datoReserva.getPlaca()).getRenta();

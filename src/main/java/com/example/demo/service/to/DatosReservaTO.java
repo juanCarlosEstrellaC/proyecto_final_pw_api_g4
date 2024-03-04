@@ -1,20 +1,25 @@
-package com.example.demo.repository.modelo;
+package com.example.demo.service.to;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
-public class DatoReserva {
+public class DatosReservaTO implements Serializable{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3282958826443379479L;
 	private String placa;
 	private String cedula;
 	private String tarjeta;
 	private LocalDate fechaInicio;
 	private LocalDate fechaFin;
 
-	public DatoReserva() {
+	public DatosReservaTO() {
 
 	}
 
-	public DatoReserva(String placa, String cedula, String tarjeta, LocalDate fechaInicio, LocalDate fechaFin) {
+	public DatosReservaTO(String placa, String cedula, String tarjeta, LocalDate fechaInicio, LocalDate fechaFin) {
 		super();
 		this.placa = placa;
 		this.cedula = cedula;

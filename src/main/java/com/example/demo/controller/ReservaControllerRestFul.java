@@ -1,10 +1,10 @@
 package com.example.demo.controller;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -26,7 +26,7 @@ public class ReservaControllerRestFul {
 
     @Autowired
     private IReservaService iReservaService;
-
+/*
     // reportes , por fechas de inicio y fin
      @GetMapping(path = "/reporte", produces = "application/json")
      public ResponseEntity<List<ReporteTO>> reporte(@RequestParam String fechaInicio, @RequestParam String fechaFin) {
@@ -45,7 +45,7 @@ public class ReservaControllerRestFul {
         // System.out.println(lista);
          return ResponseEntity.status(HttpStatus.OK).body(null);
 
-     }
+     }*/
 
      @PutMapping(path = "/retiro")
      public void retiroReservado(@RequestParam String numeroReserva){
@@ -72,8 +72,11 @@ public class ReservaControllerRestFul {
 
     //reporte por fechas
     @GetMapping(path = "/{fechaInicio}/{fechaFin}", produces = "application/json")
-    public ResponseEntity<List<ReporteTO>> reporteReservas(@PathVariable LocalDateTime fechaInicio, @PathVariable LocalDateTime fechaFin) {
-        List<ReporteTO> lista = this.iReservaService.reporteReservas(fechaInicio.toLocalDate(), fechaFin.toLocalDate());
+    public ResponseEntity<List<ReporteTO>> reporteReservas(
+            @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaInicio,
+            @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaFin
+    ) {
+        List<ReporteTO> lista = this.iReservaService.reporteReservas(fechaInicio, fechaFin);
         return ResponseEntity.status(HttpStatus.OK).body(lista);
     }
 

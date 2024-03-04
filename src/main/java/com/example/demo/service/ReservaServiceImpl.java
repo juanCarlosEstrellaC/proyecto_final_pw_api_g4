@@ -46,6 +46,7 @@ public class ReservaServiceImpl implements IReservaService {
 		Reserva reserva = new Reserva();
 
 		int numero = (int) (Math.random() * 100 + 1);
+		System.out.println("esfsefsef"+numero);
 		String cadena = cedula.substring(0, 5);
 		String codigoReserva = "R" + numero + "-" + cadena;
 
@@ -115,7 +116,10 @@ public class ReservaServiceImpl implements IReservaService {
 		reservadto.setPlaca(vehiculo.getPlaca());
 		reservadto.setEstado(vehiculo.getEstado());
 		reservadto.setModelo(vehiculo.getModelo());
-		reservadto.setFecha(reserva.getFechaFin());
+		
+
+		
+		reservadto.setFecha(reserva.getFechaInicio()+" hasta "+reserva.getFechaFin());
 		reservadto.setReservadoPor(reserva.getNumero());
 		
 		return  reservadto;
