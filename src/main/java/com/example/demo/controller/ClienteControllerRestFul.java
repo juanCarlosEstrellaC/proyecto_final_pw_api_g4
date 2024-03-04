@@ -49,18 +49,17 @@ public class ClienteControllerRestFul {
 	@Autowired
 	private ICobroService cobroService;
 
-	//se quito por el cambiop de JuanIgnacio
-	  //BUSCAR TODOS LOS CLIENTES //http://localhost:8082/API/v1.0/Renta/clientes
-	  
+	// se quito por el cambiop de JuanIgnacio
+	// BUSCAR TODOS LOS CLIENTES //http://localhost:8082/API/v1.0/Renta/clientes
+
 	@GetMapping
-	public  ResponseEntity<List<ClienteTO>> buscarTodos() {
+	public ResponseEntity<List<ClienteTO>> buscarTodos() {
 		List<ClienteTO> lista = this.iClienteService.buscarTodos();
 		HttpHeaders cabeceras = new HttpHeaders();
 		cabeceras.add("mensaje_242", "Lista consultada de manera satisfactoria.");
 		cabeceras.add("mensaje_info", "El sistema va estar en mantenimiento el fin de semana.");
-		return new ResponseEntity<>(lista, cabeceras, 242); //todo lo que no es de ka data principal va en al cabecera
+		return new ResponseEntity<>(lista, cabeceras, 242); // todo lo que no es de ka data principal va en al cabecera
 	}
-
 
 	//
 
@@ -75,8 +74,6 @@ public class ClienteControllerRestFul {
 		return ResponseEntity.status(HttpStatus.OK).body(cliente);
 
 	}
-	
-	
 
 	// buscar reserva por numero
 	@GetMapping(path = "/{numero}/reservas")
@@ -86,8 +83,9 @@ public class ClienteControllerRestFul {
 	}
 
 	// 1.b: RESERVAR VEHICULO
+	// http://localhost:8082/API/v1.0/Renta/clientes/generarReserva
 	@PostMapping(path = "/generarReserva", consumes = MediaType.APPLICATION_JSON_VALUE)
-	public void reservarAuto(@RequestBody DatosReservaTO datoReserva) {
+	public ResponseEntity<ReservaTO> reservarAuto(@RequestBody DatosReservaTO datoReserva) {
 		Reserva nuevaReserva = this.reservaService.reservarVehiculo(datoReserva.getPlaca(), datoReserva.getCedula(),
 				datoReserva.getFechaInicio(), datoReserva.getFechaFin());
 		BigDecimal precio = this.vehiculoService.buscarPorPlaca(datoReserva.getPlaca()).getRenta();
@@ -96,7 +94,21 @@ public class ClienteControllerRestFul {
 		System.out.println(precio);
 		this.cobroService.realizarPago(datoReserva.getTarjeta(), precio, nuevaReserva);
 		// modelo.addAttribute("datosReserva", datoReserva);
-		// return "vistaListaReservas";
+
+		var lista = this.reservaService.buscarReserva(datoReserva.getPlaca());
+		var elem = lista.get(0);
+		return ResponseEntity.status(HttpStatus.OK).body(elem);
+	}
+
+	// Buscar Reservas por Cedula desde el cliente. //Falta cambiar a RESERVA TO
+	// http://localhost:8082/API/v1.0/Renta/clientes/reservas/{placa}
+	@GetMapping(path = "/reservas/{placa}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<ReservaTO> buscarReservasPorPlaca(@PathVariable String placa) {
+		System.out.println(placa);
+		var lista = this.reservaService.buscarReserva(placa);
+		var elem = lista.get(0);
+		return ResponseEntity.status(HttpStatus.OK).body(elem);
+
 	}
 
 	// 1.c REGISTRARSE COMO CLLENTE
@@ -150,26 +162,23 @@ public class ClienteControllerRestFul {
 		modelo.addAttribute("vehiculos", listaVehiculos);
 		return "vistaAutosDisponibles";
 	}
-	
-	
-	// Cotizar valor renta
-		// http://localhost:8082/API/v1.0/Renta/clientes/cotizar
-		@PostMapping(path = "cotizar")
-		public ResponseEntity<Double> cotizarPorPlaca(@RequestBody PreReserva pr) {
-			System.out.println(pr);
-			VehiculoTO vehiculo = this.vehiculoService.buscarPorPlaca(pr.getPlaca());
-			long numeroDeDias = ChronoUnit.DAYS.between(pr.getFechaInicio(), pr.getFechaFin());
-			// Integer numeroDeDias = pr.getDias();
-			BigDecimal valorPorDia = vehiculo.getRenta();
-	 
-			BigDecimal rentaDias = valorPorDia.multiply(new BigDecimal(numeroDeDias));
-			BigDecimal precioIva = rentaDias.multiply(new BigDecimal(0.12));
-			BigDecimal precioTotal = rentaDias.add(precioIva);
-	 
-			return ResponseEntity.status(HttpStatus.OK).body(precioTotal.doubleValue());
-		}
 
-	
+	// Cotizar valor renta
+	// http://localhost:8082/API/v1.0/Renta/clientes/cotizar
+	@PostMapping(path = "cotizar")
+	public ResponseEntity<Double> cotizarPorPlaca(@RequestBody PreReserva pr) {
+		System.out.println(pr);
+		VehiculoTO vehiculo = this.vehiculoService.buscarPorPlaca(pr.getPlaca());
+		long numeroDeDias = ChronoUnit.DAYS.between(pr.getFechaInicio(), pr.getFechaFin());
+		// Integer numeroDeDias = pr.getDias();
+		BigDecimal valorPorDia = vehiculo.getRenta();
+
+		BigDecimal rentaDias = valorPorDia.multiply(new BigDecimal(numeroDeDias));
+		BigDecimal precioIva = rentaDias.multiply(new BigDecimal(0.12));
+		BigDecimal precioTotal = rentaDias.add(precioIva);
+
+		return ResponseEntity.status(HttpStatus.OK).body(precioTotal.doubleValue());
+	}
 
 	/*
 	 * @GetMapping("/reservas") public String buscarAutosDisponibles(DatoReserva
