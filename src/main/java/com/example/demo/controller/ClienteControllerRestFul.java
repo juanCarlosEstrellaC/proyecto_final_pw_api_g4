@@ -138,6 +138,18 @@ public class ClienteControllerRestFul {
 		modelo.addAttribute("vehiculos", listaVehiculos);
 		return "vistaAutosDisponibles";
 	}
+	
+	// Buscar Clientes desde el cliente.
+		// http://localhost:8082/API/v1.0/Renta/clientes
+		@GetMapping(path = "/{cedula}", produces = MediaType.APPLICATION_JSON_VALUE)
+		public ResponseEntity<ClienteTO> buscarClienteCedula(@PathVariable String cedula) {
+			System.out.println(cedula);
+			ClienteTO cliente = this.iClienteService.buscarPorCedula(cedula);
+			System.out.println(cedula);
+			System.out.println(cliente);
+			return ResponseEntity.status(HttpStatus.OK).body(cliente);
+	 
+		}
 
 	
 

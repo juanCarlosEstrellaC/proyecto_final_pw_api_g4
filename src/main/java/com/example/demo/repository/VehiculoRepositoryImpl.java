@@ -159,7 +159,7 @@ public class VehiculoRepositoryImpl implements IVehiculoRepository {
 		// TODO Auto-generated method stub
 		Query myQuery = this.entityManager.createQuery(
 				"SELECT NEW com.example.demo.repository.modelo.DTO.VehiculoDTO(v.placa, v.modelo, v.marca, v.anioFabricacion, v.estado, v.renta) "
-						+ "FROM Vehiculo v WHERE v.marca =:datoMarca OR v.modelo =: datoModelo");
+						+ "FROM Vehiculo v WHERE v.marca =:datoMarca AND v.modelo =: datoModelo");
 		myQuery.setParameter("datoMarca", marca);
 		myQuery.setParameter("datoModelo", modelo);
 		return myQuery.getResultList();

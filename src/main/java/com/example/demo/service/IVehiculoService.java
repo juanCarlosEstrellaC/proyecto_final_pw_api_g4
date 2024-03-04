@@ -31,4 +31,5 @@ public interface IVehiculoService {
 	public List<VehiculoDTO> buscarVehiculosPorMarcayModelo(String marca, String modelo);
 
 	public boolean existeVehiculoConPlaca(String placa);
+	public boolean validarVehiculo(VehiculoTO vehiculo);
 }

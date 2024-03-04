@@ -76,7 +76,7 @@ public class EmpleadoController {
 	        // Verificar si ya existe un vehículo con la misma placa
 	        boolean clienteExistente = this.iClienteService.existeClienteConCedula(cliente.getNumeroCedula());
 	     
-	        if (clienteExistente == true) {
+	        if (clienteExistente) {
 	            // Ya existe un vehículo con la misma placa, no se puede insertar
 	            return ResponseEntity.status(HttpStatus.CONFLICT).body(2);
 	        }
@@ -150,10 +150,20 @@ public class EmpleadoController {
 		
 		
 		 try {
+			 
+			 boolean validar = this.iVehiculoService.validarVehiculo(vehiculo);
+		     
+				
+				if (!validar) {
+			        // Si no están llenos, retornar un código de error
+			        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(3);
+			    }
+			 
+			 
 		        // Verificar si ya existe un vehículo con la misma placa
 		        boolean vehiculoExistente = this.iVehiculoService.existeVehiculoConPlaca(vehiculo.getPlaca());
 		     
-		        if (vehiculoExistente == true) {
+		        if (vehiculoExistente) {
 		            // Ya existe un vehículo con la misma placa, no se puede insertar
 		            return ResponseEntity.status(HttpStatus.CONFLICT).body(2);
 		        }
@@ -215,7 +225,7 @@ public class EmpleadoController {
 
 	// 2.d.2: ACTUALIZAR TODOS LOS DATOS DEL VEHICULO (menos el estado)
 	// http://localhost:8082/API/v1.0/Renta/empleados/actualizarVehiculo/{id}
-	@PutMapping(path = "/actualizarVehiculo/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+	@PatchMapping(path = "/actualizarVehiculo/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
 	public void actualizarVehiculo(@RequestBody VehiculoTO vehiculo, @PathVariable Integer id) {// no se inserta el id
 		vehiculo.setId(id);
 		this.iVehiculoService.actualizar(vehiculo);

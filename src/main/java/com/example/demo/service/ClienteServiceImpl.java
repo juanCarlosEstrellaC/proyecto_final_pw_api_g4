@@ -136,28 +136,17 @@ public class ClienteServiceImpl implements IClienteService {
 			ClienteTO cliente = this.buscarPorCedula(cedula);
 			return cliente != null;
 		} catch (Exception e) {
-			// Manejar la excepción según tus necesidades
 			return false;
 		}
 	}
 
 	public boolean validarCliente(ClienteTO cliente) {
 		// Verificar que el objeto no sea nulo
-		if (cliente == null) {
+
+		if ((cliente.getNumeroCedula() == null || cliente.getApellido() == null)) {
 			return false;
 		}
 
-		// Verificar que el atributo cedula no sea nulo ni vacío
-		if (cliente.getNumeroCedula() == null || cliente.getNumeroCedula().isEmpty()) {
-			return false;
-		}
-
-		// Verificar que el atributo apellido no sea nulo ni vacío
-		if (cliente.getApellido() == null || cliente.getApellido().isEmpty()) {
-			return false;
-		}
-
-		// Si pasa todas las validaciones, retorna true
 		return true;
 	}
 

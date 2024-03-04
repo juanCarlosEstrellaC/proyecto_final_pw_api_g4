@@ -182,4 +182,14 @@ public class VehiculoServiceImpl implements IVehiculoService {
 	        return false;
 	    }
 	}
+	
+	public boolean validarVehiculo(VehiculoTO vehiculo) {
+		// Verificar que el objeto no sea nulo
+
+		if ((vehiculo.getPlaca() == null || vehiculo.getMarca() == null)) {
+			return false;
+		}
+
+		return true;
+	}
 }
