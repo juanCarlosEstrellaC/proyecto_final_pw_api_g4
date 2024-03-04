@@ -11,6 +11,7 @@ import javax.transaction.Transactional;
 import org.springframework.stereotype.Repository;
 
 import com.example.demo.repository.modelo.Reserva;
+import com.example.demo.service.to.ReporteTO;
 
 
 
@@ -121,6 +122,22 @@ public class ReservaRepositoryImpl implements IReservaRepository {
 		// TODO Auto-generated method stub
 		TypedQuery<Reserva> myQuery = this.entityManager.createQuery("SELECT r FROM Reserva r WHERE r.cliente.id =: id",Reserva.class);
 		myQuery.setParameter("id", id);
+		return myQuery.getResultList();
+	}
+
+	@Override
+	public List<ReporteTO> seleccionarListaPorFechas(LocalDate fechaInicio, LocalDate fechaFin) {
+		// TODO Auto-generated method stub
+		TypedQuery<ReporteTO> myQuery = this.entityManager.createQuery("SELECT NEW com.example.demo.service.to.ReporteTO"+
+		"(r.numeroReserva, r.diasReserva, r.fechaInicio, r.fechaFin, r.estado,"+
+		" c.apellido, c.numeroCedula,"+
+		" v.placa, v.modelo, v.marca)"+
+		" FROM Reserva r"+
+		" INNER JOIN r.cliente c "+
+		"INNER JOIN r.vehiculo v "+
+		"WHERE r.fechaInicio >= :datoFechaInicio AND r.fechaFin <= :datoFechaFin",ReporteTO.class);
+		myQuery.setParameter("datoFechaInicio", fechaInicio);
+		myQuery.setParameter("datoFechaFin", fechaFin);
 		return myQuery.getResultList();
 	}
 

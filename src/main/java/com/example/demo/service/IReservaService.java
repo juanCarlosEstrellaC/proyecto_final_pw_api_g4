@@ -30,5 +30,7 @@ public interface IReservaService {
 	public List<ReporteTO> Reporte(LocalDate fechaInicio, LocalDate fechaFin);
 
 	public void retirarVehiculo(String numeroReserva);
+	
+	public List<ReporteTO> reporteReservas(LocalDate fechaInicio, LocalDate fechaFin);
 
 }

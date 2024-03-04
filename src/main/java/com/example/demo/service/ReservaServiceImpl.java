@@ -46,23 +46,23 @@ public class ReservaServiceImpl implements IReservaService {
 		Reserva reserva = new Reserva();
 
 		int numero = (int) (Math.random() * 100 + 1);
+		System.out.println("esfsefsef"+numero);
 		String cadena = cedula.substring(0, 5);
 		String codigoReserva = "R" + numero + "-" + cadena;
 
-		reserva.setNumeroReserva(cedula);
+		reserva.setNumeroReserva(codigoReserva);
 		reserva.setDiasReserva(dias);
 		reserva.setFechaInicio(inicio);
 		reserva.setFechaFin(fin);
 		reserva.setEstado("Reservado");
 		reserva.setCliente(cliente);
 		reserva.setVehiculo(vehiculo);
-		reserva.setNumero(codigoReserva);
+		reserva.setNumero(cedula);
 
 		this.reservaRepository.guardar(reserva);
 		System.out.println("El vehiculo ha sido reservado");
 		return reserva;
 	}
-
 	@Override
 	//@Transactional(value = TxType.REQUIRES_NEW)
 	public boolean buscarvehiculoDisponible(String placa, LocalDate inicio, LocalDate fin) {
@@ -115,7 +115,7 @@ public class ReservaServiceImpl implements IReservaService {
 		reservadto.setPlaca(vehiculo.getPlaca());
 		reservadto.setEstado(vehiculo.getEstado());
 		reservadto.setModelo(vehiculo.getModelo());
-		reservadto.setFecha(reserva.getFechaFin());
+		reservadto.setFecha(reserva.getFechaInicio()+" hasta "+reserva.getFechaFin());
 		reservadto.setReservadoPor(reserva.getNumero());
 		
 		return  reservadto;
@@ -224,6 +224,12 @@ public class ReservaServiceImpl implements IReservaService {
 		Vehiculo vehiculo = this.vehiculoRepository.buscarPorPlaca(reserva.getVehiculo().getPlaca());
 		vehiculo.setEstado("No Disponible");
 		this.vehiculoRepository.actualizarEstado(vehiculo);	
+	}
+	@Override
+	public List<ReporteTO> reporteReservas(LocalDate fechaInicio, LocalDate fechaFin) {
+		// TODO Auto-generated method stub
+		List<ReporteTO> lista = this.reservaRepository.seleccionarListaPorFechas(fechaInicio, fechaFin);
+		return lista;
 	}
 			
 		

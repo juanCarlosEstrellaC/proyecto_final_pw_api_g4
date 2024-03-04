@@ -3,8 +3,8 @@ package com.example.demo.repository;
 import java.time.LocalDate;
 import java.util.List;
 
-
 import com.example.demo.repository.modelo.Reserva;
+import com.example.demo.service.to.ReporteTO;
 
 
 
@@ -32,5 +32,8 @@ public interface IReservaRepository {
 	//public RetiroTo buscarReservas(String numero);
 	
 	public List<Reserva> seleccionarPorIdCiente(Integer id);
+	/// CAMBIOS
+		public List<ReporteTO> seleccionarListaPorFechas(LocalDate fechaInicio, LocalDate fechaFin);
+
 
 }
