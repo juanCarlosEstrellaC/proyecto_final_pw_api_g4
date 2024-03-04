@@ -123,9 +123,10 @@ public class Cliente {
 	@Override
 	public String toString() {
 		return "Cliente [id=" + id + ", nombre=" + nombre + ", apellido=" + apellido + ", numeroCedula=" + numeroCedula
-				+ ", fechaNacimiento=" + fechaNacimiento /*+ ", genero=" + genero + ", telefono=" + telefono*/
-				+ ", registro=" + registro;
+				+ ", fechaNacimiento=" + fechaNacimiento + ", genero=" + genero + ", registro=" + registro + "]";
 	}
+
+
 
 	
 

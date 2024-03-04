@@ -1,13 +1,10 @@
 package com.example.demo.controller;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
-
 import java.math.BigDecimal;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.Link;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -21,7 +18,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.repository.modelo.DatoReserva;
@@ -32,12 +28,13 @@ import com.example.demo.service.ICobroService;
 import com.example.demo.service.IReservaService;
 import com.example.demo.service.IVehiculoService;
 import com.example.demo.service.to.ClienteTO;
+import com.example.demo.service.to.PreReserva;
 import com.example.demo.service.to.ReservaTO;
+import com.example.demo.service.to.VehiculoTO;
 
-
-@RestController//Servicio
-@RequestMapping(path="/clientes")
-@CrossOrigin//(value="http://localhost:8080")
+@RestController // Servicio
+@RequestMapping(path = "/clientes")
+@CrossOrigin // (value="http://localhost:8080")
 public class ClienteControllerRestFul {
 
 	@Autowired
@@ -52,84 +49,109 @@ public class ClienteControllerRestFul {
 	@Autowired
 	private ICobroService cobroService;
 
-	//BUSCAR TODOS LOS CLIENTES
-	//http://localhost:8082/API/v1.0/Renta/clientes
+	// http://localhost:8082/API/v1.0/Renta/clientes
+	@GetMapping(path = "/{cedula}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<ClienteTO> buscarClienteCedula(@PathVariable String cedula) {
+		System.out.println(cedula);
+		ClienteTO cliente = this.iClienteService.buscarPorCedula(cedula);
+		System.out.println(cedula);
+		System.out.println(cliente);
+		return ResponseEntity.status(HttpStatus.OK).body(cliente);
+
+	}
+
+	// BUSCAR TODOS LOS CLIENTES
+	// http://localhost:8082/API/v1.0/Renta/clientes
 	@GetMapping
-	public  ResponseEntity<List<ClienteTO>> buscarTodos() {
+	public ResponseEntity<List<ClienteTO>> buscarTodos() {
 		List<ClienteTO> lista = this.iClienteService.buscarTodos();
 		HttpHeaders cabeceras = new HttpHeaders();
 		cabeceras.add("mensaje_242", "Lista consultada de manera satisfactoria.");
 		cabeceras.add("mensaje_info", "El sistema va estar en mantenimiento el fin de semana.");
-		return new ResponseEntity<>(lista, cabeceras, 242); //todo lo que no es de ka data principal va en al cabecera
+		return new ResponseEntity<>(lista, cabeceras, 242); // todo lo que no es de ka data principal va en al cabecera
 	}
 
-	
-	//buscar reserva por numero
-	@GetMapping(path="/{numero}/reservas")
-	public ResponseEntity<List<ReservaTO>> consultarReservasPorNumero(@PathVariable Integer numero){
+	// buscar reserva por numero
+	@GetMapping(path = "/{numero}/reservas")
+	public ResponseEntity<List<ReservaTO>> consultarReservasPorNumero(@PathVariable Integer numero) {
 		List<ReservaTO> lista = this.reservaService.buscarReservasPorIdCliente(numero);
 		return ResponseEntity.status(HttpStatus.OK).body(lista);
 	}
-	
-	//1.b: RESERVAR VEHICULO
-		@PostMapping(path="/generarReserva",consumes =MediaType.APPLICATION_JSON_VALUE)
-		public void reservarAuto(DatoReserva datoReserva, Model modelo) {
-			Reserva nuevaReserva = this.reservaService.reservarVehiculo(datoReserva.getPlaca(), datoReserva.getCedula(),
-					datoReserva.getFechaInicio(), datoReserva.getFechaFin());
-			BigDecimal precio = this.vehiculoService.buscarPorPlaca(datoReserva.getPlaca()).getRenta();
-			// Reserva
-			// datos=this.reservaService.buscarAutoReserva(datosReserva.getCedula());
-			System.out.println(precio);
-			this.cobroService.realizarPago(datoReserva.getTarjeta(), precio, nuevaReserva);
-			//modelo.addAttribute("datosReserva", datoReserva);
-			//return "vistaListaReservas";
-		}
-	
-		// 1.c REGISTRARSE COMO CLLENTE
-		// http://localhost:8082/API/v1.0/Renta/clientes
-		@PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-		public ResponseEntity<Integer> guardar(@RequestBody ClienteTO cliente) {
-			System.out.println("ClienteTO: " + cliente);
-			try {
-				boolean registroExitoso = this.iClienteService.registro(cliente);
-				if (registroExitoso) {
-					return ResponseEntity.status(HttpStatus.CREATED).body(1);
-				} else {
-					return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(0);
 
-				}
-			} catch (Exception e) {
+	// 1.b: RESERVAR VEHICULO
+	@PostMapping(path = "/generarReserva", consumes = MediaType.APPLICATION_JSON_VALUE)
+	public void reservarAuto(DatoReserva datoReserva, Model modelo) {
+		Reserva nuevaReserva = this.reservaService.reservarVehiculo(datoReserva.getPlaca(), datoReserva.getCedula(),
+				datoReserva.getFechaInicio(), datoReserva.getFechaFin());
+		BigDecimal precio = this.vehiculoService.buscarPorPlaca(datoReserva.getPlaca()).getRenta();
+		// Reserva
+		// datos=this.reservaService.buscarAutoReserva(datosReserva.getCedula());
+		System.out.println(precio);
+		this.cobroService.realizarPago(datoReserva.getTarjeta(), precio, nuevaReserva);
+		// modelo.addAttribute("datosReserva", datoReserva);
+		// return "vistaListaReservas";
+	}
+
+	// Cotizar valor renta
+	// http://localhost:8082/API/v1.0/Renta/clientes/cotizar
+	@PostMapping(path = "cotizar")
+	public ResponseEntity<Double> cotizarPorPlaca(@RequestBody PreReserva pr) {
+		System.out.println(pr);
+		VehiculoTO vehiculo = this.vehiculoService.buscarPorPlaca(pr.getPlaca());
+		long numeroDeDias = ChronoUnit.DAYS.between(pr.getFechaInicio(), pr.getFechaFin());
+		// Integer numeroDeDias = pr.getDias();
+		BigDecimal valorPorDia = vehiculo.getRenta();
+
+		BigDecimal rentaDias = valorPorDia.multiply(new BigDecimal(numeroDeDias));
+		BigDecimal precioIva = rentaDias.multiply(new BigDecimal(0.12));
+		BigDecimal precioTotal = rentaDias.add(precioIva);
+
+		return ResponseEntity.status(HttpStatus.OK).body(precioTotal.doubleValue());
+	}
+
+	// 1.c REGISTRARSE COMO CLLENTE
+	// http://localhost:8082/API/v1.0/Renta/clientes
+	@PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<Integer> guardar(@RequestBody ClienteTO cliente) {
+		System.out.println("ClienteTO: " + cliente);
+		try {
+			boolean registroExitoso = this.iClienteService.registro(cliente);
+			if (registroExitoso) {
+				return ResponseEntity.status(HttpStatus.CREATED).body(1);
+			} else {
 				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(0);
-			}
-		}
 
-	
-	//1.d ACTUALIZAR CLIENTE, A EXCEPCIÓN DE LA CÉDULA
-	//http://localhost:8082/API/v1.0/Renta/clientes/id
-	@PatchMapping(path="/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+			}
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(0);
+		}
+	}
+
+	// 1.d ACTUALIZAR CLIENTE, A EXCEPCIÓN DE LA CÉDULA
+	// http://localhost:8082/API/v1.0/Renta/clientes/id
+	@PatchMapping(path = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
 	public void actualizarParcial(@RequestBody ClienteTO cliente, @PathVariable Integer id) {
-		this.iClienteService.actualizarParcial(cliente.getNombre(), cliente.getApellido(), cliente.getFechaNacimiento(),cliente.getGenero() ,cliente.getRegistro(), id);
+		this.iClienteService.actualizarParcial(cliente.getNombre(), cliente.getApellido(), cliente.getFechaNacimiento(),
+				cliente.getGenero(), cliente.getRegistro(), id);
 	}
 
 	/*
-	//ACTUALIZAR UN CLIENTE, actualización completa
-	@PutMapping(path="/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
-	public void actualizarCliente(@RequestBody Cliente cliente, @PathVariable Integer id ){
+	 * //ACTUALIZAR UN CLIENTE, actualización completa
+	 * 
+	 * @PutMapping(path="/{id}", consumes = MediaType.APPLICATION_JSON_VALUE) public
+	 * void actualizarCliente(@RequestBody Cliente cliente, @PathVariable Integer id
+	 * ){
+	 * 
+	 * cliente.setId(id); this.iClienteService.actualizar(cliente); }
+	 */
 
-		cliente.setId(id);
-		this.iClienteService.actualizar(cliente);
+	// ELIMINCAR CLIENTE
+	@DeleteMapping(path = "/{id}")
+	public void borrar(@PathVariable Integer id) {
+		this.iClienteService.eliminar(id);
 	}
-	*/
-	
-	
-	
-	//ELIMINCAR CLIENTE
-	 @DeleteMapping(path="/{id}")
-	    public void borrar(@PathVariable Integer id){
-	        this.iClienteService.eliminar(id);
-	    }
 
-	//BUSCAR VEHICULOS
+	// BUSCAR VEHICULOS
 	@GetMapping("/buscarAutos")
 	public String buscarAutosDisponibles(Model modelo, Vehiculo vehiculo) {
 
@@ -139,43 +161,33 @@ public class ClienteControllerRestFul {
 		return "vistaAutosDisponibles";
 	}
 
-	
-
-	
-	/*@GetMapping("/reservas")
-	public String buscarAutosDisponibles(DatoReserva datoReserva, RedirectAttributes a) {
-
-		boolean disponible = this.reservaService.buscarvehiculoDisponible(datoReserva.getPlaca(),
-				datoReserva.getFechaInicio(), datoReserva.getFechaFin());
-
-		if (disponible == false) {
-			a.addFlashAttribute("error", "ATENCION: Este vehiculo No esta disponible");
-			return "redirect:/clientes/mostrarDisponibles";
-		}
-
-		return "vistaReservar";
-	}
-	
-
-
-	@GetMapping("/mostrarDisponibles")
-	public String autosDisponibles(DatoReserva datoReserva) {
-		return "vistaListaAutosDisponibles";
-	}
-	
-	@GetMapping("/vehiculosClientes")
-	public String vehiculosClientes(Vehiculo vehiculo) {
-		return "vistaListaVehiculosCliente";
-	}
-	
-	@GetMapping("/registroCliente")
-	public String registro(Cliente cliente, Vehiculo vehiculo) {
-		return "vistaRegistroCliente";
-	}
-	
-	@GetMapping("/vistaActualizar")
-	public String vistaACtualizar(Cliente cliente) {
-		return "vistaActualizarCliente";
-	}*/
+	/*
+	 * @GetMapping("/reservas") public String buscarAutosDisponibles(DatoReserva
+	 * datoReserva, RedirectAttributes a) {
+	 * 
+	 * boolean disponible =
+	 * this.reservaService.buscarvehiculoDisponible(datoReserva.getPlaca(),
+	 * datoReserva.getFechaInicio(), datoReserva.getFechaFin());
+	 * 
+	 * if (disponible == false) { a.addFlashAttribute("error",
+	 * "ATENCION: Este vehiculo No esta disponible"); return
+	 * "redirect:/clientes/mostrarDisponibles"; }
+	 * 
+	 * return "vistaReservar"; }
+	 * 
+	 * 
+	 * 
+	 * @GetMapping("/mostrarDisponibles") public String autosDisponibles(DatoReserva
+	 * datoReserva) { return "vistaListaAutosDisponibles"; }
+	 * 
+	 * @GetMapping("/vehiculosClientes") public String vehiculosClientes(Vehiculo
+	 * vehiculo) { return "vistaListaVehiculosCliente"; }
+	 * 
+	 * @GetMapping("/registroCliente") public String registro(Cliente cliente,
+	 * Vehiculo vehiculo) { return "vistaRegistroCliente"; }
+	 * 
+	 * @GetMapping("/vistaActualizar") public String vistaACtualizar(Cliente
+	 * cliente) { return "vistaActualizarCliente"; }
+	 */
 
 }

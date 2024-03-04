@@ -55,7 +55,7 @@ public class ClienteServiceImpl implements IClienteService {
 		cliente.setRegistro("C");
 
 		Cliente clie = this.convertirTOaCliente(cliente);
-		System.out.println(clie.getNombre());
+		System.out.println("CLIENTE:"+clie);
 		return this.iClienteRepository.insertar(clie);
 
 	}
@@ -90,10 +90,7 @@ public class ClienteServiceImpl implements IClienteService {
 	@Override
 	//@Transactional(value = TxType.REQUIRES_NEW)
 	public ClienteTO buscarPorCedula(String cedula) {
-		
 		Cliente cliente = this.iClienteRepository.buscarCedula(cedula);
-		
-	
 		return this.convertir(cliente);
 	}
 
