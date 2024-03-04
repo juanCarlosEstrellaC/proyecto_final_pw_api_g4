@@ -71,6 +71,7 @@ public class ClienteServiceImpl implements IClienteService {
 		clie.setFechaNacimiento(cliente.getFechaNacimiento());
 		clie.setGenero(cliente.getGenero());
 		clie.setRegistro(cliente.getRegistro());
+		clie.setCorreo(cliente.getCorreo());
 
 		return clie;
 	}
@@ -119,6 +120,7 @@ public class ClienteServiceImpl implements IClienteService {
 		clieTO.setFechaNacimiento(clie.getFechaNacimiento());
 		clieTO.setGenero(clie.getGenero());
 		clieTO.setRegistro(clie.getRegistro());
+		clieTO.setCorreo(clie.getCorreo());
 
 		return clieTO;
 

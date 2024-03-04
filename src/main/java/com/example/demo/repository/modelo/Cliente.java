@@ -40,14 +40,28 @@ public class Cliente {
 
 	@Column(name = "clie_registro")
 	private String registro;
+	
+	@Column(name = "clie_correo")
+	private String correo;
 
 	// Relacion uno a muchos con reserva
 	@OneToMany(mappedBy = "cliente")
 	private List<Reserva> reservas;
 
 	// SET y GET
+	
+	
+	
 	public Integer getId() {
 		return id;
+	}
+
+	public String getCorreo() {
+		return correo;
+	}
+
+	public void setCorreo(String correo) {
+		this.correo = correo;
 	}
 
 	public void setId(Integer id) {

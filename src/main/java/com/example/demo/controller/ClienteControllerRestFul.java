@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.email.EmailService;
 import com.example.demo.repository.modelo.Reserva;
 import com.example.demo.repository.modelo.Vehiculo;
 import com.example.demo.service.IClienteService;
@@ -48,6 +49,8 @@ public class ClienteControllerRestFul {
 
 	@Autowired
 	private ICobroService cobroService;
+	@Autowired
+	private EmailService correoService;
 
 	//se quito por el cambiop de JuanIgnacio
 	  //BUSCAR TODOS LOS CLIENTES //http://localhost:8082/API/v1.0/Renta/clientes
@@ -79,6 +82,7 @@ public class ClienteControllerRestFul {
 	
 
 	// buscar reserva por numero
+	
 	@GetMapping(path = "/{numero}/reservas")
 	public ResponseEntity<List<ReservaTO>> consultarReservasPorNumero(@PathVariable Integer numero) {
 		List<ReservaTO> lista = this.reservaService.buscarReservasPorIdCliente(numero);
@@ -86,8 +90,9 @@ public class ClienteControllerRestFul {
 	}
 
 	// 1.b: RESERVAR VEHICULO
+	// http://localhost:8082/API/v1.0/Renta/clientes/generarReserva
 	@PostMapping(path = "/generarReserva", consumes = MediaType.APPLICATION_JSON_VALUE)
-	public void reservarAuto(@RequestBody DatosReservaTO datoReserva) {
+	public ResponseEntity<ReservaTO> reservarAuto(@RequestBody DatosReservaTO datoReserva) {
 		Reserva nuevaReserva = this.reservaService.reservarVehiculo(datoReserva.getPlaca(), datoReserva.getCedula(),
 				datoReserva.getFechaInicio(), datoReserva.getFechaFin());
 		BigDecimal precio = this.vehiculoService.buscarPorPlaca(datoReserva.getPlaca()).getRenta();
@@ -96,8 +101,26 @@ public class ClienteControllerRestFul {
 		System.out.println(precio);
 		this.cobroService.realizarPago(datoReserva.getTarjeta(), precio, nuevaReserva);
 		// modelo.addAttribute("datosReserva", datoReserva);
-		// return "vistaListaReservas";
+
+		var lista = this.reservaService.buscarReserva(datoReserva.getPlaca());
+		var elem = lista.get(0);
+		return ResponseEntity.status(HttpStatus.OK).body(elem);
+		
+		
 	}
+	
+	
+	
+	// Buscar Reservas por Cedula desde el cliente. //Falta cambiar a RESERVA TO
+		// http://localhost:8082/API/v1.0/Renta/clientes/reservas/{placa}
+		@GetMapping(path = "/reservas/{placa}", produces = MediaType.APPLICATION_JSON_VALUE)
+		public ResponseEntity<ReservaTO> buscarReservasPorPlaca(@PathVariable String placa) {
+			System.out.println(placa);
+			var lista = this.reservaService.buscarReserva(placa);
+			var elem = lista.get(0);
+			return ResponseEntity.status(HttpStatus.OK).body(elem);
+
+		}
 
 	// 1.c REGISTRARSE COMO CLLENTE
 	// http://localhost:8082/API/v1.0/Renta/clientes
@@ -107,6 +130,11 @@ public class ClienteControllerRestFul {
 		try {
 			boolean registroExitoso = this.iClienteService.registro(cliente);
 			if (registroExitoso) {
+				
+				String asunto = "Registro existoso";
+		        String contenido = "¡Gracias por registrarse a nuestra Empresa!";
+		        correoService.enviarCorreo(cliente.getCorreo(), asunto, contenido);
+				
 				return ResponseEntity.status(HttpStatus.CREATED).body(1);
 			} else {
 				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(0);

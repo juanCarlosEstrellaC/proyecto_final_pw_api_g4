@@ -1,7 +1,7 @@
 package com.example.demo.service.to;
-
+ 
 import java.time.LocalDate;
-
+ 
 public class ReporteTO {
    
     private String numeroReserva;
@@ -25,6 +25,22 @@ public class ReporteTO {
     private String marca;
  
  
+    public ReporteTO(String numeroReserva, Integer diasReserva, LocalDate fechaInicio, LocalDate fechaFin, String estado,
+            String apellido, String numeroCedula, String placa, String modelo, String marca) {
+        this.numeroReserva = numeroReserva;
+        this.diasReserva = diasReserva;
+        this.fechaInicio = fechaInicio;
+        this.fechaFin = fechaFin;
+        this.estado = estado;
+        this.apellido = apellido;
+        this.numeroCedula = numeroCedula;
+        this.placa = placa;
+        this.modelo = modelo;
+        this.marca = marca;
+    }
+ 
+    public ReporteTO() {
+    }
     //get y set
  
     public String getNumeroReserva() {

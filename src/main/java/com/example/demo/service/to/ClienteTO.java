@@ -27,9 +27,18 @@ public class ClienteTO extends RepresentationModel<ClienteTO>  implements Serial
 	private String genero;
 
 	private String registro;
+	private String correo;
 
 	public Integer getId() {
 		return id;
+	}
+
+	public String getCorreo() {
+		return correo;
+	}
+
+	public void setCorreo(String correo) {
+		this.correo = correo;
 	}
 
 	public void setId(Integer id) {

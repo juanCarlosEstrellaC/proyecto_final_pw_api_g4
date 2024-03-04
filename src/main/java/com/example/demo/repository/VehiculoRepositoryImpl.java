@@ -44,7 +44,7 @@ public class VehiculoRepositoryImpl implements IVehiculoRepository {
 		// this.entityManager.merge(vh);
 
 		Query query = this.entityManager.createQuery(
-				"UPDATE Vehiculo v SET v.placa= :valor1, v.marca= : valor2, v.modelo= :valor3, v.anioFabricacion= : valor4, v.paisFabricacion= :valor5, v.cilindraje= : valor6, v.avaluo= :valor7, v.renta= : valor8 WHERE v.id= :valor9");
+				"UPDATE Vehiculo v SET v.placa= :valor1, v.estado= :valor10, v.marca= : valor2, v.modelo= :valor3, v.anioFabricacion= : valor4, v.paisFabricacion= :valor5, v.cilindraje= : valor6, v.avaluo= :valor7, v.renta= : valor8 WHERE v.id= :valor9");
 
 		query.setParameter("valor1", vh.getPlaca());
 		query.setParameter("valor2", vh.getMarca());
@@ -55,6 +55,7 @@ public class VehiculoRepositoryImpl implements IVehiculoRepository {
 		query.setParameter("valor7", vh.getAvaluo());
 		query.setParameter("valor8", vh.getRenta());
 		query.setParameter("valor9", vh.getId());
+		query.setParameter("valor10", vh.getEstado());
 		query.executeUpdate();
 
 	}

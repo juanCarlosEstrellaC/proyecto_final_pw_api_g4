@@ -32,4 +32,6 @@ public interface IVehiculoRepository {
 	
 	//1.a: Buscar vehículos disponibles
 	public List<VehiculoDTO> buscarVehiculosPorMarcayModelo(String marca, String modelo);
+
+
 }
