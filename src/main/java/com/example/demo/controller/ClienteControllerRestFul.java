@@ -166,7 +166,7 @@ public class ClienteControllerRestFul {
 		        String correo = cliente.getCorreo();
 		        LocalDateTime fechaActual = LocalDateTime.now();
 		        if (correo != null && !correo.isEmpty()) {
-			        String contenido = "Detalles de la reserva:\n";
+			        String contenido = "Gracias por registrarte:\n";
 			        contenido += "- Apellido: " + cliente.getApellido() + "\n";
 			        contenido += "- Cédula: " + fechaActual + "\n";
 			        contenido += "- Fecha de registro: " + fechaActual + "\n";

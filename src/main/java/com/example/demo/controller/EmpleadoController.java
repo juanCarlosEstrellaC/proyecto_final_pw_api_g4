@@ -100,7 +100,7 @@ public class EmpleadoController {
 		        String correo = cliente.getCorreo();
 		        LocalDateTime fechaActual = LocalDateTime.now();
 		        if (correo != null && !correo.isEmpty()) {
-			        String contenido = "¡Gracias por realizar la reserva!\n\n";
+			        String contenido = "¡Gracias por registrarte\n\n";
 			        contenido += "Detalles de la reserva:\n";
 			        contenido += "- Apellido: " + cliente.getApellido() + "\n";
 			        contenido += "- Cédula: " + fechaActual + "\n";
