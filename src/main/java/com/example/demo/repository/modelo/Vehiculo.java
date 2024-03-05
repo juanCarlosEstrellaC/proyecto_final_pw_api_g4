@@ -12,54 +12,54 @@ import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
-
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
-@Table(name="vehiculo")
+@Table(name = "vehiculo")
 public class Vehiculo {
-	
+
 	@Id
-	@Column(name="vehi_id")
-	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator ="vehi_id_seq" )
-	@SequenceGenerator(name="vehi_id_seq", sequenceName = "vehi_id_seq", allocationSize =1 )
+	@Column(name = "vehi_id")
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "vehi_id_seq")
+	@SequenceGenerator(name = "vehi_id_seq", sequenceName = "vehi_id_seq", allocationSize = 1)
 	private Integer id;
-	
-	@Column(name="vehi_placa")
+
+	@Column(name = "vehi_placa")
 	private String placa;
-	
-	@Column(name="vehi_modelo")
+
+	@Column(name = "vehi_modelo")
 	private String modelo;
-	
-	@Column(name="vehi_marca")
+
+	@Column(name = "vehi_marca")
 	private String marca;
 
-	@Column(name="vehi_anio_fabricacion")
+	@Column(name = "vehi_anio_fabricacion")
 	private String anioFabricacion;
 
-	@Column(name="vehi_estado")
+	@Column(name = "vehi_estado")
 	private String estado;
-	
-	@Column(name="vehi_pais_fabricacion")
+
+	@Column(name = "vehi_pais_fabricacion")
 	private String paisFabricacion;
-	
-	@Column(name="vehi_cilindraje")
+
+	@Column(name = "vehi_cilindraje")
 	private String cilindraje;
-	
-	@Column(name="vehi_combustible")
+
+	@Column(name = "vehi_combustible")
 	private String combustible;
-	
-	@Column(name="vehi_avaluo")
+
+	@Column(name = "vehi_avaluo")
 	private BigDecimal avaluo;
-	
-	@Column(name="vehi_renta")
+
+	@Column(name = "vehi_renta")
 	private BigDecimal renta;
 
-	//Relacion uno a muchos con renta
-	@OneToMany(mappedBy ="vehiculo")
+	// Relacion uno a muchos con renta
+	@OneToMany(mappedBy = "vehiculo")
+	@JsonIgnore
 	private List<Reserva> reservas;
 
-	//SET y GET
+	// SET y GET
 	public Integer getId() {
 		return id;
 	}
@@ -99,7 +99,6 @@ public class Vehiculo {
 	public void setEstado(String estado) {
 		this.estado = estado;
 	}
-
 
 	public String getCilindraje() {
 		return cilindraje;
@@ -163,8 +162,6 @@ public class Vehiculo {
 
 	public void setCombustible(String combustible) {
 		this.combustible = combustible;
-	}	
-	
-	
-	
+	}
+
 }

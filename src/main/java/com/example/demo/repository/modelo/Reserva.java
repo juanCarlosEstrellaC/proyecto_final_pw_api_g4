@@ -14,8 +14,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
-
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "reserva")
@@ -48,15 +47,18 @@ public class Reserva {
 	// Relacion muchos a uno con cliente
 	@ManyToOne
 	@JoinColumn(name = "rese_clie_id")
+	@JsonIgnore
 	private Cliente cliente;
 
 	// Relacion muchos a uno con vehiculo
 	@ManyToOne
 	@JoinColumn(name = "rese_vehi_id")
+	@JsonIgnore
 	private Vehiculo vehiculo;
 
 	// Relacion uno a uno con cobro
 	@OneToOne(mappedBy = "reserva", fetch = FetchType.EAGER)
+	@JsonIgnore
 	private Cobro cobro;
 
 	// SET y GET

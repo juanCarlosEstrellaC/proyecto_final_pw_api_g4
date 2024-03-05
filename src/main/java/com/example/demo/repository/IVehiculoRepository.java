@@ -26,10 +26,10 @@ public interface IVehiculoRepository {
 
 	public List<Vehiculo> buscarPorFechas(String fechaInicio, String fechaFin);
 
+	public List<Vehiculo> buscarPorMarcayModelo(String marca, String Modelo);
 
-	public List<Vehiculo> buscarPorMarcayModelo(String marca,String Modelo);
-	
-	
-	//1.a: Buscar vehículos disponibles
+	// 1.a: Buscar vehículos disponibles
 	public List<VehiculoDTO> buscarVehiculosPorMarcayModelo(String marca, String modelo);
+
+	public List<Vehiculo> buscarVehiculosPorMarcayModelo22(String marca, String modelo);
 }

@@ -1,13 +1,14 @@
 package com.example.demo.repository.modelo.DTO;
 
-import java.math.BigDecimal;
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.List;
 
 import org.springframework.hateoas.RepresentationModel;
 
+import com.example.demo.repository.modelo.Reserva;
 
-
-public class VehiculoDTO extends RepresentationModel<VehiculoDTO> implements Serializable{
+public class VehiculoDTO extends RepresentationModel<VehiculoDTO> implements Serializable {
 
 	/**
 	 * 
@@ -20,12 +21,14 @@ public class VehiculoDTO extends RepresentationModel<VehiculoDTO> implements Ser
 	private String anio;
 	private String estado;
 	private BigDecimal renta;
-	
+	private List<Reserva> reservas;
+
 	public VehiculoDTO() {
-		
+
 	}
-	
-	public VehiculoDTO(String placa, String modelo, String marca,String anio, String estado, BigDecimal renta) {
+
+	public VehiculoDTO(String placa, String modelo, String marca, String anio, String estado, BigDecimal renta,
+			List<Reserva> reservas) {
 		super();
 		this.placa = placa;
 		this.modelo = modelo;
@@ -33,19 +36,30 @@ public class VehiculoDTO extends RepresentationModel<VehiculoDTO> implements Ser
 		this.anio = anio;
 		this.estado = estado;
 		this.renta = renta;
+		this.reservas = reservas;
 	}
 
 	@Override
 	public String toString() {
-		return "VehiculoDTO [placa=" + placa + ", modelo=" + modelo + ", marca=" + marca + ", estado=" + estado
-				+ ", renta=" + renta + "]";
+		return "VehiculoDTO [placa=" + placa + ", modelo=" + modelo + ", marca=" + marca + ", anio=" + anio
+				+ ", estado=" + estado + ", renta=" + renta + ", reservas=" + reservas + "]";
 	}
 
-	
-	//GET Y SET
-	
+	// GET Y SET
 	public String getPlaca() {
 		return placa;
+	}
+
+	public List<Reserva> getReservas() {
+		return reservas;
+	}
+
+	public void setReservas(List<Reserva> reservas) {
+		this.reservas = reservas;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
 	}
 
 	public String getAnio() {
@@ -91,7 +105,5 @@ public class VehiculoDTO extends RepresentationModel<VehiculoDTO> implements Ser
 	public void setRenta(BigDecimal renta) {
 		this.renta = renta;
 	}
-	
-	
-	
+
 }

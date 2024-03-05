@@ -1,25 +1,16 @@
 package com.example.demo.service;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
-
-import javax.persistence.NoResultException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.repository.IVehiculoRepository;
-import com.example.demo.repository.modelo.Cliente;
-import com.example.demo.repository.modelo.Reserva;
 import com.example.demo.repository.modelo.Vehiculo;
 import com.example.demo.repository.modelo.DTO.VehiculoDTO;
-import com.example.demo.service.to.ClienteTO;
 import com.example.demo.service.to.VehiculoTO;
+import com.example.demo.service.to.VehiculoTO2;
 
 @Service
 public class VehiculoServiceImpl implements IVehiculoService {
@@ -109,24 +100,23 @@ public class VehiculoServiceImpl implements IVehiculoService {
 	@Override
 	// @Transactional(value = TxType.REQUIRES_NEW)
 	public List<VehiculoTO> buscarPorMarca(String marca) {
-		
-			List<Vehiculo> lista = this.iVehiculoRepository.buscarPorMarca(marca);
-			List<VehiculoTO> listaFinal = new ArrayList<>();
 
-			for (Vehiculo vehi : lista) {
-				listaFinal.add(this.convertir(vehi));
-			}
-			return listaFinal;
-	
-		
+		List<Vehiculo> lista = this.iVehiculoRepository.buscarPorMarca(marca);
+		List<VehiculoTO> listaFinal = new ArrayList<>();
+
+		for (Vehiculo vehi : lista) {
+			listaFinal.add(this.convertir(vehi));
+		}
+		return listaFinal;
+
 	}
 
 	@Override
 	// @Transactional(value = TxType.REQUIRES_NEW)
 	public VehiculoTO buscarPorPlaca(String placa) {
 		// TODO Auto-generated method stub
-			Vehiculo vehiculo = this.iVehiculoRepository.buscarPorPlaca(placa);
-			return convertir(vehiculo);
+		Vehiculo vehiculo = this.iVehiculoRepository.buscarPorPlaca(placa);
+		return convertir(vehiculo);
 	}
 
 	@Override
@@ -165,6 +155,25 @@ public class VehiculoServiceImpl implements IVehiculoService {
 		return vehiTO;
 	}
 
+	private VehiculoTO2 convertir22(Vehiculo v) {
+		VehiculoTO2 vehiTO2 = new VehiculoTO2();
+
+		vehiTO2.setId(v.getId());
+		vehiTO2.setPlaca(v.getPlaca());
+		vehiTO2.setModelo(v.getModelo());
+		vehiTO2.setMarca(v.getMarca());
+		vehiTO2.setAnioFabricacion(v.getAnioFabricacion());
+		vehiTO2.setEstado(v.getEstado());
+		vehiTO2.setPaisFabricacion(v.getPaisFabricacion());
+		vehiTO2.setCilindraje(v.getCilindraje());
+		vehiTO2.setAvaluo(v.getAvaluo());
+		vehiTO2.setRenta(v.getRenta());
+		vehiTO2.setCombustible(v.getCombustible());
+		vehiTO2.setReservas(v.getReservas());
+
+		return vehiTO2;
+	}
+
 	@Override
 	public List<VehiculoDTO> buscarVehiculosPorMarcayModelo(String marca, String modelo) {
 		// TODO Auto-generated method stub
@@ -172,17 +181,28 @@ public class VehiculoServiceImpl implements IVehiculoService {
 	}
 
 	@Override
+	public List<VehiculoTO2> buscarVehiculosPorMarcayModelo22(String marca, String modelo) {
+		List<Vehiculo> lista = this.iVehiculoRepository.buscarVehiculosPorMarcayModelo22(marca, modelo);
+		List<VehiculoTO2> listaFinal = new ArrayList<>();
+
+		for (Vehiculo vehi : lista) {
+			listaFinal.add(this.convertir22(vehi));
+		}
+		return listaFinal;
+	}
+
+	@Override
 	public boolean existeVehiculoConPlaca(String placa) {
 		// TODO Auto-generated method stub
 		try {
-	        VehiculoTO vehiculo = this.buscarPorPlaca(placa);
-	        return vehiculo != null;
-	    } catch (Exception e) {
-	        // Manejar la excepción según tus necesidades
-	        return false;
-	    }
+			VehiculoTO vehiculo = this.buscarPorPlaca(placa);
+			return vehiculo != null;
+		} catch (Exception e) {
+			// Manejar la excepción según tus necesidades
+			return false;
+		}
 	}
-	
+
 	public boolean validarVehiculo(VehiculoTO vehiculo) {
 		// Verificar que el objeto no sea nulo
 

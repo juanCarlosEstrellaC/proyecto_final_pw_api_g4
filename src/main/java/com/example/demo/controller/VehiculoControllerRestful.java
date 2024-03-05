@@ -19,35 +19,74 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.repository.modelo.DTO.VehiculoDTO;
 import com.example.demo.service.IVehiculoService;
-import com.example.demo.service.to.VehiculoTO;
+import com.example.demo.service.to.VehiculoTO2;
 
-@RestController//Servicio
-@RequestMapping(path="/vehiculos")
-@CrossOrigin//(value="http://localhost:8080")
+@RestController // Servicio
+@RequestMapping(path = "/vehiculos")
+@CrossOrigin // (value="http://localhost:8080")
 public class VehiculoControllerRestful {
 
 	@Autowired
 	private IVehiculoService vehiculoService;
+
+	// 1.a: BUSCAR VEHICULOS DISPONIBLES
+	// http://localhost:8082/API/v1.0/Renta/vehiculos/buscarAutos?marca=nombreMarca&modelo=nombreModelo
+	@GetMapping(path = "/buscarAutos22", produces = "application/json")
+	public ResponseEntity<List<VehiculoDTO>> buscaPorMarcayModelo(@RequestParam(required = false) String marca,
+			@RequestParam(required = false) String modelo) {
+
+		List<VehiculoDTO> lista = new ArrayList<>();
+
+		if (marca != null || modelo != null) {
+			lista = this.vehiculoService.buscarVehiculosPorMarcayModelo(marca, modelo);
+		}
+
+		for (VehiculoDTO vehi : lista) {
+			Link link = linkTo(methodOn(VehiculoControllerRestful.class).buscaPorMarcayModelo(marca, modelo))
+					.withSelfRel();
+			vehi.add(link);
+		}
+
+		return ResponseEntity.status(HttpStatus.OK).body(lista);
+	}
+
+	// 1.a: BUSCAR VEHICULOS DISPONIBLES
+	// http://localhost:8082/API/v1.0/Renta/vehiculos/buscarAutos/vto?marca=nombreMarca&modelo=nombreModelo
+	@GetMapping(path = "/buscarAutos/vto", produces = "application/json")
+	public ResponseEntity<List<VehiculoTO2>> buscaPorMarcayModelo22(@RequestParam(required = false) String marca,
+			@RequestParam(required = false) String modelo) {
+		List<VehiculoTO2> lista = new ArrayList<>();
+		if (marca != null || modelo != null) {
+			lista = this.vehiculoService.buscarVehiculosPorMarcayModelo22(marca, modelo);
+		}
+
+		System.out.println(lista);
+//		for (var vehi : lista) {
+//			Link link = linkTo(methodOn(VehiculoControllerRestful.class).buscaPorMarcayModelo(marca, modelo))
+//					.withSelfRel();
+//			vehi.add(link);
+//		}
+
+		return ResponseEntity.status(HttpStatus.OK).body(lista);
+	}
 	
-	//1.a: BUSCAR VEHICULOS DISPONIBLES
-	//http://localhost:8082/API/v1.0/Renta/vehiculos/buscarAutos?marca=nombreMarca&modelo=nombreModelo
-	@GetMapping(path="/buscarAutos", produces = "application/json")
-	public ResponseEntity<List<VehiculoDTO>> buscaPorMarcayModelo(
-	        @RequestParam(required = false) String marca,
-	        @RequestParam(required = false) String modelo) {
-	   
-	    List<VehiculoDTO> lista = new ArrayList<>();
-	    
-	    if (marca != null || modelo != null) {
-	        lista = this.vehiculoService.buscarVehiculosPorMarcayModelo(marca, modelo);
-	    } 
-
-	     for(VehiculoDTO vehi: lista) {
-	         Link link = linkTo(methodOn(VehiculoControllerRestful.class).buscaPorMarcayModelo(marca, modelo)).withSelfRel();
-	        vehi.add(link);
-	     }
-
-	    return ResponseEntity.status(HttpStatus.OK).body(lista);
+	
+	// http://localhost:8082/API/v1.0/Renta/vehiculos/buscarReservas?marca=nombreMarca&modelo=nombreModelo
+	@GetMapping(path = "/buscarReservas", produces = "application/json")
+	public ResponseEntity<List<VehiculoTO2>> buscaPorMarcay(@RequestParam(required = false) String marca,
+			@RequestParam(required = false) String modelo) {
+		List<VehiculoTO2> lista = new ArrayList<>();
+		if (marca != null || modelo != null) {
+			lista = this.vehiculoService.buscarVehiculosPorMarcayModelo22(marca, modelo);
+		}
+		
+		System.out.println(lista);
+//		for (var vehi : lista) {
+//			Link link = linkTo(methodOn(VehiculoControllerRestful.class).buscaPorMarcayModelo(marca, modelo))
+//					.withSelfRel();
+//			vehi.add(link);
+//		}
+		
+		return ResponseEntity.status(HttpStatus.OK).body(lista);
 	}
 }
-
