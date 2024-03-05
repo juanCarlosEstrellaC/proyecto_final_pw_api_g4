@@ -250,7 +250,7 @@ public class ReservaServiceImpl implements IReservaService {
 	}
 	
 	@Override
-	public List<List<LocalDate>> obtenerFechasInicioFin(String placaVehiculo) {
+	public List<LocalDate> obtenerFechasInicioFin(String placaVehiculo) {
 		 List<Reserva> reservas = this.reservaRepository.seleccionarReservasPorVehiculo(placaVehiculo);
 
 		    List<List<LocalDate>> fechasInicioFinConDiasFaltantes = reservas.stream()
@@ -271,8 +271,18 @@ public class ReservaServiceImpl implements IReservaService {
 		                return listaFechas;
 		            })
 		            .collect(Collectors.toList());
+		    
+		    
+		    List<LocalDate> todasLasFechas = new ArrayList<>();
 
-		    return fechasInicioFinConDiasFaltantes;
+	        // Iterar sobre la lista de listas
+	        for (List<LocalDate> lista : fechasInicioFinConDiasFaltantes) {
+	            // Agregar todas las fechas de la lista interna a la lista resultante
+	            todasLasFechas.addAll(lista);
+	        }
+
+	        return todasLasFechas;
+		 
 		}
 		
 	}

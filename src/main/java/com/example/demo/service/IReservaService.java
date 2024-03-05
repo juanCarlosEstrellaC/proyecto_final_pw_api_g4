@@ -34,7 +34,7 @@ public interface IReservaService {
 	public List<ReservaTO> buscarReserva(String placa);
 
 
-	public List<List<LocalDate>> obtenerFechasInicioFin(String placaVehiculo);
+	public List<LocalDate> obtenerFechasInicioFin(String placaVehiculo);
 	
 	
 }
