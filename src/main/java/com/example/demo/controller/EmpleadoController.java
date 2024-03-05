@@ -3,6 +3,7 @@ package com.example.demo.controller;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -94,8 +95,23 @@ public class EmpleadoController {
 	        if (registroExitoso) {
 	        	
 	        	String asunto = "Registro existoso";
-		        String contenido = "¡Gracias por registrarse a nuestra Empresa!";
-		        correoService.enviarCorreo(cliente.getCorreo(), asunto, contenido);
+		        //String contenido = "¡Gracias por registrarse a nuestra Empresa!";
+		        //correoService.enviarCorreo(cliente.getCorreo(), asunto, contenido);
+		        String correo = cliente.getCorreo();
+		        LocalDateTime fechaActual = LocalDateTime.now();
+		        if (correo != null && !correo.isEmpty()) {
+			        String contenido = "¡Gracias por realizar la reserva!\n\n";
+			        contenido += "Detalles de la reserva:\n";
+			        contenido += "- Apellido: " + cliente.getApellido() + "\n";
+			        contenido += "- Cédula: " + fechaActual + "\n";
+			        contenido += "- Fecha de registro: " + fechaActual + "\n";
+			       
+			        
+
+			        correoService.enviarCorreo(correo, asunto, contenido);
+			    }
+		        
+		        
 	            return ResponseEntity.status(HttpStatus.CREATED).body(1);
 	        } else {
 	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(0);

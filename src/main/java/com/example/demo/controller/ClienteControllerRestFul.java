@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
@@ -108,19 +109,32 @@ public class ClienteControllerRestFul {
 		String modelo = this.vehiculoService.buscarPorPlaca(placa).getModelo();
 		String marca = this.vehiculoService.buscarPorPlaca(placa).getMarca();
 		String nombreCliente = this.iClienteService.buscarPorCedula(datoReserva.getCedula()).getApellido();
-		;
-
-		String contenido = "¡Gracias por realizar la reserva!\n\n";
-		contenido += "Detalles de la reserva:\n";
-		contenido += "- Placa del vehículo: " + placa + "\n";
-		contenido += "- Marca del vehiculo: " + marca + "\n";
-		contenido += "- Modelo del vehículo: " + modelo + "\n";
-		contenido += "- Valor de la reserva: $" + precio + "\n";
-		contenido += "- Nombre del cliente: " + nombreCliente + "\n";
-		contenido += "- Nombre del cliente: " + nombreCliente + "\n";
 
 		String correo = this.iClienteService.buscarPorCedula(datoReserva.getCedula()).getCorreo();
-		correoService.enviarCorreo(correo, asunto, contenido);
+		LocalDateTime fechaActual = LocalDateTime.now();
+		if (correo != null && !correo.isEmpty()) {
+	        String contenido = "¡Gracias por realizar la reserva!\n\n";
+	        contenido += "Detalles de la reserva:\n";
+	        contenido += "- Placa del vehículo: " + placa + "\n";
+	        contenido += "- Marca del vehículo: " + marca + "\n";
+	        contenido += "- Modelo del vehículo: " + modelo + "\n";
+	        contenido += "- Valor de la reserva: $" + precio + "\n";
+	        contenido += "- Nombre del cliente: " + nombreCliente + "\n";
+	        contenido += "- Reserva realizada: " + fechaActual + "\n";
+
+	        correoService.enviarCorreo(correo, asunto, contenido);
+	    }
+//		String contenido = "¡Gracias por realizar la reserva!\n\n";
+//		contenido += "Detalles de la reserva:\n";
+//		contenido += "- Placa del vehículo: " + placa + "\n";
+//		contenido += "- Marca del vehiculo: " + marca + "\n";
+//		contenido += "- Modelo del vehículo: " + modelo + "\n";
+//		contenido += "- Valor de la reserva: $" + precio + "\n";
+//		contenido += "- Nombre del cliente: " + nombreCliente + "\n";
+//		contenido += "- Nombre del cliente: " +  + "\n";
+
+		//String correo = this.iClienteService.buscarPorCedula(datoReserva.getCedula()).getCorreo();
+		//correoService.enviarCorreo(correo, asunto, contenido);
 
 		return ResponseEntity.status(HttpStatus.OK).body(elem);
 
@@ -146,11 +160,22 @@ public class ClienteControllerRestFul {
 			boolean registroExitoso = this.iClienteService.registro(cliente);
 			if (registroExitoso) {
 
-				/*
-				 * String asunto = "Registro existoso"; String contenido =
-				 * "¡Gracias por registrarse a nuestra Empresa!";
-				 * correoService.enviarCorreo(cliente.getCorreo(), asunto, contenido);
-				 */
+				String asunto = "Registro existoso";
+		        //String contenido = "¡Gracias por registrarse a nuestra Empresa!";
+		        //correoService.enviarCorreo(cliente.getCorreo(), asunto, contenido);
+		        String correo = cliente.getCorreo();
+		        LocalDateTime fechaActual = LocalDateTime.now();
+		        if (correo != null && !correo.isEmpty()) {
+			        String contenido = "¡Gracias por realizar la reserva!\n\n";
+			        contenido += "Detalles de la reserva:\n";
+			        contenido += "- Apellido: " + cliente.getApellido() + "\n";
+			        contenido += "- Cédula: " + fechaActual + "\n";
+			        contenido += "- Fecha de registro: " + fechaActual + "\n";
+			       
+			        
+
+			        correoService.enviarCorreo(correo, asunto, contenido);
+			    }
 				return ResponseEntity.status(HttpStatus.CREATED).body(1);
 			} else {
 				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(0);
