@@ -59,7 +59,6 @@ public class VehiculoServiceImpl implements IVehiculoService {
 		vehi.setEstado(vehiculo.getEstado());
 		vehi.setPaisFabricacion(vehiculo.getPaisFabricacion());
 		vehi.setCilindraje(vehiculo.getCilindraje());
-		vehi.setCombustible(vehiculo.getCombustible());
 		vehi.setAvaluo(vehiculo.getAvaluo());
 		vehi.setRenta(vehiculo.getRenta());
 
@@ -89,7 +88,6 @@ public class VehiculoServiceImpl implements IVehiculoService {
 		vehi.setCilindraje(v.getCilindraje());
 		vehi.setAvaluo(v.getAvaluo());
 		vehi.setRenta(v.getRenta());
-		vehi.setCombustible(v.getCombustible());
 
 		return vehi;
 	}
@@ -160,7 +158,6 @@ public class VehiculoServiceImpl implements IVehiculoService {
 		vehiTO.setCilindraje(v.getCilindraje());
 		vehiTO.setAvaluo(v.getAvaluo());
 		vehiTO.setRenta(v.getRenta());
-		vehiTO.setCombustible(v.getCombustible());
 
 		return vehiTO;
 	}
