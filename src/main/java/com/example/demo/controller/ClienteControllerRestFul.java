@@ -109,7 +109,11 @@ public class ClienteControllerRestFul {
 	public ResponseEntity<ReservaTO> buscarReservasPorPlaca(@PathVariable String placa) {
 		System.out.println(placa);
 		var lista = this.reservaService.buscarReserva(placa);
+		
 		var elem = lista.get(0);
+		if(lista.isEmpty()) {
+			
+		}
 		return ResponseEntity.status(HttpStatus.OK).body(elem);
 
 	}
