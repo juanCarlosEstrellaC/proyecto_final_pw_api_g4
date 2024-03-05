@@ -141,4 +141,15 @@ public class ReservaRepositoryImpl implements IReservaRepository {
 		return myQuery.getResultList();
 	}
 
+	@Override
+	public List<Reserva> seleccionarReservasPorVehiculo(String placaVehiculo) {
+		// TODO Auto-generated method stub
+		TypedQuery<Reserva> myQuery = this.entityManager.createQuery(
+	            "SELECT r FROM Reserva r WHERE r.vehiculo.placa = :placaVehiculo",
+	            Reserva.class
+	    );
+	    myQuery.setParameter("placaVehiculo", placaVehiculo);
+	    return myQuery.getResultList();
+	}
+
 }

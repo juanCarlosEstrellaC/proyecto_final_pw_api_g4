@@ -2,8 +2,12 @@ package com.example.demo.service;
 
 import java.time.LocalDate;
 import java.time.Period;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,9 +16,7 @@ import com.example.demo.repository.IClienteRepository;
 import com.example.demo.repository.IReservaRepository;
 import com.example.demo.repository.IVehiculoRepository;
 import com.example.demo.repository.modelo.Cliente;
-
 import com.example.demo.repository.modelo.Reserva;
-
 import com.example.demo.repository.modelo.Vehiculo;
 import com.example.demo.repository.modelo.DTO.ReservaDTO;
 import com.example.demo.service.to.ReporteTO;
@@ -246,6 +248,31 @@ public class ReservaServiceImpl implements IReservaService {
 		List<ReporteTO> lista = this.reservaRepository.seleccionarListaPorFechas(fechaInicio, fechaFin);
 		return lista;
 	}
-			
+	
+	@Override
+	public List<List<LocalDate>> obtenerFechasInicioFin(String placaVehiculo) {
+		 List<Reserva> reservas = this.reservaRepository.seleccionarReservasPorVehiculo(placaVehiculo);
+
+		    List<List<LocalDate>> fechasInicioFinConDiasFaltantes = reservas.stream()
+		            .map(reserva -> {
+		                LocalDate fechaInicio = reserva.getFechaInicio();
+		                LocalDate fechaFin = reserva.getFechaFin();
+		                long diasEntre = ChronoUnit.DAYS.between(fechaInicio, fechaFin);
+
+		                List<LocalDate> listaFechas = new ArrayList<>();
+		                listaFechas.add(fechaInicio);
+
+		                for (int i = 1; i <= diasEntre; i++) {
+		                    listaFechas.add(fechaInicio.plusDays(i));
+		                }
+
+		                listaFechas.add(fechaFin);
+
+		                return listaFechas;
+		            })
+		            .collect(Collectors.toList());
+
+		    return fechasInicioFinConDiasFaltantes;
+		}
 		
 	}

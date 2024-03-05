@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
@@ -101,9 +102,29 @@ public class ClienteControllerRestFul {
 		System.out.println(precio);
 		this.cobroService.realizarPago(datoReserva.getTarjeta(), precio, nuevaReserva);
 		// modelo.addAttribute("datosReserva", datoReserva);
+		
 
 		var lista = this.reservaService.buscarReserva(datoReserva.getPlaca());
 		var elem = lista.get(0);
+		String asunto = "Registro existoso";
+            
+        String placa = datoReserva.getPlaca();
+        String modelo = this.vehiculoService.buscarPorPlaca(placa).getModelo();
+        String marca = this.vehiculoService.buscarPorPlaca(placa).getMarca();
+        String nombreCliente = this.iClienteService.buscarPorCedula(datoReserva.getCedula()).getApellido();;
+
+        String contenido = "¡Gracias por realizar la reserva!\n\n";
+        contenido += "Detalles de la reserva:\n";
+        contenido += "- Placa del vehículo: " + placa + "\n";
+        contenido += "- Marca del vehiculo: " + marca  + "\n";
+        contenido += "- Modelo del vehículo: " + modelo + "\n";
+        contenido += "- Valor de la reserva: $" + precio + "\n";
+        contenido += "- Nombre del cliente: " + nombreCliente + "\n";
+        contenido += "- Nombre del cliente: " + nombreCliente + "\n";
+        
+        String correo = this.iClienteService.buscarPorCedula(datoReserva.getCedula()).getCorreo();
+        correoService.enviarCorreo(correo, asunto, contenido);
+		
 		return ResponseEntity.status(HttpStatus.OK).body(elem);
 		
 		
@@ -131,10 +152,11 @@ public class ClienteControllerRestFul {
 			boolean registroExitoso = this.iClienteService.registro(cliente);
 			if (registroExitoso) {
 				
+				/*
 				String asunto = "Registro existoso";
 		        String contenido = "¡Gracias por registrarse a nuestra Empresa!";
 		        correoService.enviarCorreo(cliente.getCorreo(), asunto, contenido);
-				
+				*/
 				return ResponseEntity.status(HttpStatus.CREATED).body(1);
 			} else {
 				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(0);
@@ -196,6 +218,15 @@ public class ClienteControllerRestFul {
 	 
 			return ResponseEntity.status(HttpStatus.OK).body(precioTotal.doubleValue());
 		}
+		
+		// http://localhost:8082/API/v1.0/Renta/clientes/fechas/
+		@GetMapping(path = "/fechas/{placa}", produces = MediaType.APPLICATION_JSON_VALUE)
+		public ResponseEntity<List<List<LocalDate>>> fechasRentasPorVehiculo(@PathVariable String placa){
+			List<List<LocalDate>> fechas = this.reservaService.obtenerFechasInicioFin(placa);
+			
+			return ResponseEntity.status(HttpStatus.OK).body(fechas);
+		}
+		
 
 	
 

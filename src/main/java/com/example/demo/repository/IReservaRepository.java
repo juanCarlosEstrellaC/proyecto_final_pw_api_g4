@@ -35,5 +35,6 @@ public interface IReservaRepository {
 	/// CAMBIOS
 		public List<ReporteTO> seleccionarListaPorFechas(LocalDate fechaInicio, LocalDate fechaFin);
 
-
+//---------------------
+		public List<Reserva> seleccionarReservasPorVehiculo(String placaVehiculo);
 }
