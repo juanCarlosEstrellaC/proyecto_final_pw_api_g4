@@ -46,8 +46,7 @@ public class Vehiculo {
 	@Column(name="vehi_cilindraje")
 	private String cilindraje;
 	
-	@Column(name="vehi_combustible")
-	private String combustible;
+
 	
 	@Column(name="vehi_avaluo")
 	private BigDecimal avaluo;
@@ -154,16 +153,10 @@ public class Vehiculo {
 		return "Vehiculo [id=" + id + ", placa=" + placa + ", modelo=" + modelo + ", marca=" + marca
 				+ ", anioFabricacion=" + anioFabricacion + ", estado=" + estado + ", paisFabricacion=" + paisFabricacion
 				+ ", cilindraje=" + cilindraje + ", avaluo=" + avaluo + ", renta=" + renta + ", combustible="
-				+ combustible + "]";
+				;
 	}
 
-	public String getCombustible() {
-		return combustible;
-	}
 
-	public void setCombustible(String combustible) {
-		this.combustible = combustible;
-	}	
 	
 	
 	

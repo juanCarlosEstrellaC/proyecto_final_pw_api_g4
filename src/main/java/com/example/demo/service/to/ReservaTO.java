@@ -29,6 +29,8 @@ public class ReservaTO extends RepresentationModel<ReservaTO>  implements Serial
 
 	private String estado;
 
+	
+
 	//get y set
 	public Integer getId() {
 		return id;

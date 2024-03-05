@@ -27,6 +27,7 @@ public class ClienteTO extends RepresentationModel<ClienteTO>  implements Serial
 	private String genero;
 
 	private String registro;
+	private String correo;
 
 	public Integer getId() {
 		return id;
@@ -82,6 +83,14 @@ public class ClienteTO extends RepresentationModel<ClienteTO>  implements Serial
 
 	public void setRegistro(String registro) {
 		this.registro = registro;
+	}
+
+	public String getCorreo() {
+		return correo;
+	}
+
+	public void setCorreo(String correo) {
+		this.correo = correo;
 	}
 	
 

@@ -30,7 +30,6 @@ public class VehiculoTO extends RepresentationModel<VehiculoTO>  implements Seri
 	
 	private String cilindraje;
 	
-	private String combustible;//tipo de combustible
 
 	private BigDecimal avaluo;
 	
@@ -119,14 +118,7 @@ public class VehiculoTO extends RepresentationModel<VehiculoTO>  implements Seri
 		this.renta = renta;
 	}
 
-	public String getCombustible() {
-		return combustible;
-	}
 
-	public void setCombustible(String combustible) {
-		this.combustible = combustible;
-	}
-	
 	
 	
 

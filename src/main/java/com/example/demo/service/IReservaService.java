@@ -33,4 +33,5 @@ public interface IReservaService {
 	
 	public List<ReporteTO> reporteReservas(LocalDate fechaInicio, LocalDate fechaFin);
 
+	public List<ReservaTO> buscarReserva(String placa);
 }

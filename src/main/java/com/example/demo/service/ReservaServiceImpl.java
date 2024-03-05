@@ -50,6 +50,7 @@ public class ReservaServiceImpl implements IReservaService {
 		String cadena = cedula.substring(0, 5);
 		String codigoReserva = "R" + numero + "-" + cadena;
 
+		
 		reserva.setNumeroReserva(codigoReserva);
 		reserva.setDiasReserva(dias);
 		reserva.setFechaInicio(inicio);
@@ -62,6 +63,17 @@ public class ReservaServiceImpl implements IReservaService {
 		this.reservaRepository.guardar(reserva);
 		System.out.println("El vehiculo ha sido reservado");
 		return reserva;
+	}
+	
+	@Override
+	public List<ReservaTO> buscarReserva(String placa) {
+		var lista = this.reservaRepository.buscarReserva(placa);
+		List<ReservaTO> l = new ArrayList<>();
+		for (Reserva reserva : lista) {
+			l.add(convertir(reserva));
+		}
+
+		return l;
 	}
 	@Override
 	//@Transactional(value = TxType.REQUIRES_NEW)
@@ -233,4 +245,4 @@ public class ReservaServiceImpl implements IReservaService {
 	}
 			
 		
-	}
+}

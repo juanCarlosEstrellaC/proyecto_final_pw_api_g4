@@ -40,6 +40,9 @@ public class Cliente {
 
 	@Column(name = "clie_registro")
 	private String registro;
+	
+	@Column(name = "clie_correo")
+	private String correo;
 
 	// Relacion uno a muchos con reserva
 	@OneToMany(mappedBy = "cliente")
@@ -113,6 +116,15 @@ public class Cliente {
 
 	public void setReservas(List<Reserva> reservas) {
 		this.reservas = reservas;
+	}
+
+	
+	public String getCorreo() {
+		return correo;
+	}
+
+	public void setCorreo(String correo) {
+		this.correo = correo;
 	}
 
 	@Override

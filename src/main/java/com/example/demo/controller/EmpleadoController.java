@@ -19,12 +19,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.email.EmailService;
 import com.example.demo.repository.modelo.Vehiculo;
 import com.example.demo.service.IClienteService;
 import com.example.demo.service.IReservaService;
@@ -44,6 +44,8 @@ public class EmpleadoController {
 	@Autowired
 	private IReservaService reservaService;
 
+	@Autowired
+	private EmailService correoService;
 	static List<String> genero = null;
 
 	static {
@@ -85,6 +87,10 @@ public class EmpleadoController {
 	        boolean registroExitoso = this.iClienteService.registroComoEmpleado(cliente);
 			System.out.println("ClienteTO boolean: " + registroExitoso);
 	        if (registroExitoso) {
+	        	
+	        	String asunto = "Registro existoso";
+		        String contenido = "¡Gracias por registrarse a nuestra Empresa!";
+		        correoService.enviarCorreo(cliente.getCorreo(), asunto, contenido);
 	            return ResponseEntity.status(HttpStatus.CREATED).body(1);
 	        } else {
 	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(0);
